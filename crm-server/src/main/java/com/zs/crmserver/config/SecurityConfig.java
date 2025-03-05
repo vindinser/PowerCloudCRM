@@ -7,6 +7,9 @@ import org.apache.tomcat.util.file.ConfigurationSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -24,7 +27,13 @@ public class SecurityConfig {
   private MyAuthenticationFailureHandler myAuthenticationFailureHandler;
 
   @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+
+  @Bean
   public SecurityFilterChain securityFilterChin(HttpSecurity httpSecurity, CorsConfigurationSource configurationSource) throws Exception {
+    // 禁用跨站请求伪造
     return httpSecurity
      .formLogin((formLogin) -> {
        formLogin.loginProcessingUrl("/api/login")
@@ -34,8 +43,14 @@ public class SecurityConfig {
          .failureHandler(myAuthenticationFailureHandler);
      })
      .authorizeHttpRequests((authorizeHttpRequests) -> {
-       authorizeHttpRequests.anyRequest().authenticated(); // 任何请求都需要登录后访问
+       authorizeHttpRequests
+         .requestMatchers("/api/login").permitAll()
+         .anyRequest().authenticated(); // 任何请求都需要登录后访问
      })
+     // .csrf((csrf) -> {
+     //   csrf.disable(); // 禁用跨站请求伪造
+     // })
+     .csrf(AbstractHttpConfigurer::disable) // 禁用跨站请求伪造
 
      // 支持跨域
      .cors((cors) -> {

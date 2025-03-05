@@ -7,10 +7,12 @@ import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.netty.util.internal.ObjectUtil;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.ObjectUtils;
 
 /**
  * 用户表
@@ -109,10 +111,15 @@ public class TUser implements UserDetails, Serializable {
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-    // 角色
-    this.getRoleList().forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role)));
-    // 权限
-    this.getPermissionList().forEach(permission -> authorities.add(new SimpleGrantedAuthority("ROLE_" + permission)));
+    // if(this.getRoleList != null) {
+    if(!ObjectUtils.isEmpty(this.getRoleList())) {
+      // 角色
+      this.getRoleList().forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role)));
+    }
+    if(!ObjectUtils.isEmpty(this.getPermissionList())) {
+      // 权限
+      this.getPermissionList().forEach(permission -> authorities.add(new SimpleGrantedAuthority("ROLE_" + permission)));
+    }
     return authorities;
   }
 
