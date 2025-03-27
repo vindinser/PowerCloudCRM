@@ -6,7 +6,7 @@ import App from './App.vue';
 import VueParticles from 'particles.vue3';
 
 //从router.js中导入router组件
-import router from './router'
+import router from './router';
 
 const app = createApp(App);
 

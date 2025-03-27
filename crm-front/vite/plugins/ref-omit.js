@@ -1,3 +1,3 @@
-import ReactivityTransform from '@vue-macros/reactivity-transform/vite';
+import ReactivityTransform from '@vue-macros/reactivity-transform/vite'
 
-export default () => ReactivityTransform();
+export default () => ReactivityTransform()

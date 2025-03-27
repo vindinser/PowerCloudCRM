@@ -11,7 +11,7 @@ let router = createRouter({
       // 路由路径
       path: '/',
       // 路由路径所对应的页面
-      component : () => import('@/view/Login')
+      component: () => import('@/view/Login')
     }
   ]
 });
