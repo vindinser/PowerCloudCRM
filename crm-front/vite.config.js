@@ -29,17 +29,19 @@ export default defineConfig(({ mode, command }) => {
         // https://cn.vitejs.dev/config/#server-proxy
         // 开发环境代理
         '/dev-api': {
-          target: 'http://localhoset:8080',
+          // target: 'http://localhoset:8080',
+          // target: 'http://101.43.158.81:8080',
+          target: 'http://zsawxotot.site:8080',
           changeOrigin: true,
           rewrite: (p) => p.replace(/^\/dev-api/, '')
         },
         '/stage-api': {
-          target: 'http://localhoset:8080',
+          target: 'http://101.43.158.81:8080',
           changeOrigin: true,
           rewrite: (p) => p.replace(/^\/stage-api/, '')
         },
         '/prod-api': {
-          target: 'http://localhoset:8080',
+          target: 'http://zsawxotot.site:8080',
           changeOrigin: true,
           rewrite: (p) => p.replace(/^\/prod-api/, '')
         }

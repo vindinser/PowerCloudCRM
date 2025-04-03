@@ -2,11 +2,12 @@ import { defineConfig } from 'eslint/config'
 import globals from 'globals'
 import js from '@eslint/js'
 import pluginVue from 'eslint-plugin-vue'
+import autoImportGlobals from './.eslintrc-auto-import.json' with { type: 'json' }
 
 export default defineConfig([
   {
     // 忽略的文件
-    ignores: ['dist/**', 'node_modules/**', 'public/**', '*.config.js', '*.d.ts', '.prettierrc', '.stylelintrc.cjs']
+    ignores: ['dist/**', 'node_modules/**', 'public/**', '*.config.js', '*.d.ts']
   },
   {
     // 适用于所有 JavaScript 和 Vue 文件的基础配置
@@ -14,7 +15,8 @@ export default defineConfig([
     languageOptions: {
       globals: {
         ...globals.browser,
-        ...globals.es2021
+        ...globals.es2021,
+        ...autoImportGlobals.globals
       },
       parserOptions: {
         ecmaVersion: 'latest',
@@ -22,7 +24,8 @@ export default defineConfig([
       }
     },
     plugins: {
-      js
+      js,
+      vue: pluginVue
     },
     rules: {
       // 自定义规则
@@ -161,7 +164,23 @@ export default defineConfig([
       'no-undef-init': 2, //变量初始化时不能直接给它赋值为undefined
       'no-undefined': 2, //不能使用undefined
       'no-unexpected-multiline': 2, //避免多行表达式
-      'no-underscore-dangle': 1, //标识符不能以_开头或结尾
+      // 'no-underscore-dangle': 1, //标识符不能以_开头或结尾
+      'no-underscore-dangle': ['error', {
+      allowAfterThis: true,        // 允许 this._foo
+      allowAfterSuper: true,       // 允许 super._foo
+      enforceInMethodNames: false, // 允许在方法名中使用下划线
+      allowAfterThisConstructor: true, // 允许在 this.constructor._foo
+        // 允许特定的变量名使用下划线
+        allow: [
+          '_id',
+          '_name',
+          '_value',
+          '_data',
+          '_props',
+          '_computed',
+          '_methods'
+        ]
+      }],
       'no-unneeded-ternary': 2, //禁止不必要的嵌套 var isYes = answer === 1 ? true : false;
       'no-unreachable': 2, //不能有无法执行的代码
       'no-unused-expressions': 2, //禁止无用的表达式
@@ -199,7 +218,18 @@ export default defineConfig([
       'max-nested-callbacks': [0, 2], //回调嵌套深度
       'max-params': [0, 3], //函数最多只能有3个参数
       'max-statements': [0, 10], //函数内最多有几个声明
-      'new-cap': 2, //函数名首行大写必须使用new方式调用，首行小写必须用不带new方式调用
+      // 'new-cap': 2, //函数名首行大写必须使用new方式调用，首行小写必须用不带new方式调用
+      'new-cap': ['error', {
+        newIsCap: true, // 强制构造函数以大写字母开头
+        capIsNew: false, // 允许大写字母开头的函数不使用 `new`
+        properties: false, // 允许对象属性中的大写字母
+        newIsCapExceptions: [], // 允许不以大写字母开头的构造函数
+        capIsNewExceptions: [
+          'Vue', // 允许 Vue 作为大写字母开头的函数
+          'Component', // 允许 Component 作为大写字母开头的函数
+          // 添加其他需要允许的大写字母开头的函数或组件
+        ]
+      }],
       'new-parens': 2, //new时必须加小括号
       'newline-after-var': 2, //变量声明后是否需要空一行
       'object-curly-spacing': [0, 'never'], //大括号内是否允许不必要的空格
@@ -248,6 +278,13 @@ export default defineConfig([
 
       // Vue 相关规则
       'vue/html-indent': ['error', 2], // Vue 模板缩进
+      // Vue 文件脚本部分缩进规则
+      // 'vue/script-indent': ['error', 2, {
+      //   baseIndent: 1,                  // <script> 标签相对于模板的缩进
+      //   switchCase: 1,                   // case 子句缩进1级（即2空格）
+      //   ignores: [],                      // 不忽略任何情况// 确保不与其他缩进规则冲突
+      //   // indent: 'off'  // 关闭 ESLint 核心的 indent 规则
+      // }],
       'vue/max-attributes-per-line': [
         'error',
         {
@@ -255,6 +292,7 @@ export default defineConfig([
           multiline: 1
         }
       ],
+      'vue/html-self-closing': 'error', // 自闭合标签格式（可选）
       'vue/multi-word-component-names': 'off', // 关闭组件名必须多个单词的限制
       'vue/no-multiple-template-root': 'off' // 允许多个根节点
     }

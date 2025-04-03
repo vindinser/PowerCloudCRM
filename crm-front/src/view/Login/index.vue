@@ -5,7 +5,8 @@
       class="particle-background"
       id="tsparticles"
       :particlesInit="particlesInit"
-      :options="options" />
+      :options="options"
+    />
     <div class="content">
       <div class="content-title">PowerCloudCRM</div>
       <el-form
@@ -14,7 +15,8 @@
         status-icon
         :rules="rules"
         label-width="120px"
-        style="width: 80%">
+        style="width: 80%"
+      >
         <el-form-item label="用户名" prop="loginAct">
           <el-input v-model="ruleForm.loginAct" autocomplete="off" />
         </el-form-item>
@@ -31,8 +33,8 @@
 </template>
 
 <script setup name="Login">
-import axios from 'axios';
 import { loadFull } from 'tsparticles';
+import apis from '@/api/login.js';
 
 // 定义粒子配置选项
 const options = reactive({
@@ -100,24 +102,15 @@ const submitForm = () =>
     if (!valid) {
       return ElMessage.warning('请认真填写账号密码！');
     }
-    const loading = ElLoading.service({
-      lock: true,
-      text: 'Loading',
-      background: 'rgba(0, 0, 0, 0.7)'
-    });
     let formData = new FormData();
 
     formData.append('loginAct', 'admin');
     formData.append('loginPwd', 'aaa111');
-    axios
-      .post('http://101.43.158.81:8080/api/login', formData)
-      .then((res) => {
-        console.log('🚀 ~ testAxios ~ res:', res);
-      })
-      .catch((err) => {
-        console.log('🚀 ~ testAxios ~ err:', err);
-      })
-      .finally(() => loading.close());
+    apis.login(formData).then((res) => {
+      console.log('🚀 ~ login ~ res:', res);
+    }).catch((err) => {
+      console.log('🚀 ~ login ~ err:', err);
+    });
   });
 
 const resetForm = () => ruleFormRef.value.resetFields();
