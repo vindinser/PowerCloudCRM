@@ -8,7 +8,10 @@ import VueParticles from 'particles.vue3';
 //从router.js中导入router组件
 import router from './router';
 
+import store from './store';
+
 const app = createApp(App);
 
+app.use(store);
 // app.use(ElementPlus);
 app.use(VueParticles).use(router).mount('#app');

@@ -4,11 +4,12 @@ import createVitePlugins from './vite/plugins'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode, command }) => {
-  const env = loadEnv(mode, process.cwd())
-  const { VITE_APP_ENV } = env
+  const env = loadEnv(mode, process.cwd());
+  const { VITE_APP_ENV } = env;
+  const isProd = VITE_APP_ENV === 'production';
 
   return {
-    base: VITE_APP_ENV === 'production' ? '/' : '/',
+    base: isProd ? '/' : '/',
     plugins: createVitePlugins(env, command === 'build'),
     resolve: {
       // https://cn.vitejs.dev/config/#resolve-alias
@@ -52,10 +53,10 @@ export default defineConfig(({ mode, command }) => {
       minify: 'terser',
       terserOptions: {
         compress: {
-          drop_console:
-            command === 'build' && loadEnv(mode, __dirname).VITE_API_ENV === 'production',
-          drop_debugger:
-            command === 'build' && loadEnv(mode, __dirname).VITE_API_ENV === 'production'
+          // drop_console: command === 'build' && isProd,
+          drop_console: false,
+          pure_funcs: ['console.log'],
+          drop_debugger: command === 'build' && isProd
         }
       }
     }

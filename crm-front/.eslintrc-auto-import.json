@@ -1,5 +1,8 @@
 {
   "globals": {
+    "ElMessage": true,
+    "ElMessageBox": true,
+    "ElLoading": true,
     "Component": true,
     "ComponentPublicInstance": true,
     "ComputedRef": true,
@@ -13,6 +16,8 @@
     "MaybeRefOrGetter": true,
     "PropType": true,
     "Ref": true,
+    "Slot": true,
+    "Slots": true,
     "VNode": true,
     "WritableComputedRef": true,
     "acceptHMRUpdate": true,
@@ -86,8 +91,6 @@
     "watch": true,
     "watchEffect": true,
     "watchPostEffect": true,
-    "watchSyncEffect": true,
-    "ElLoading": true,
-    "ElMessage": true
+    "watchSyncEffect": true
   }
 }

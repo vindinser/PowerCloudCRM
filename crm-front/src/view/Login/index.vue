@@ -29,12 +29,17 @@
         <el-button @click="resetForm">重 置</el-button>
       </div>
     </div>
+    <div class="registration-number">
+      <a class="beian-link" href="https://beian.miit.gov.cn/" target="_blank">冀ICP备2025106446号-1</a>
+    </div>
   </div>
 </template>
 
 <script setup name="Login">
 import { loadFull } from 'tsparticles';
-import apis from '@/api/login.js';
+import useUserStore from '@/store/modules/user';
+
+const userStore = useUserStore();
 
 // 定义粒子配置选项
 const options = reactive({
@@ -102,15 +107,8 @@ const submitForm = () =>
     if (!valid) {
       return ElMessage.warning('请认真填写账号密码！');
     }
-    let formData = new FormData();
 
-    formData.append('loginAct', 'admin');
-    formData.append('loginPwd', 'aaa111');
-    apis.login(formData).then((res) => {
-      console.log('🚀 ~ login ~ res:', res);
-    }).catch((err) => {
-      console.log('🚀 ~ login ~ err:', err);
-    });
+    userStore.login(ruleForm);
   });
 
 const resetForm = () => ruleFormRef.value.resetFields();
@@ -167,6 +165,23 @@ const resetForm = () => ruleFormRef.value.resetFields();
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+  }
+
+  .registration-number {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    .beian-link {
+      color: #fff;
+      text-decoration: none; /* 默认无下划线 */
+
+      &:hover {
+        color: #007bff; /* 悬停颜色 */
+        text-decoration: underline; /* 悬停下划线 */
+      }
     }
   }
 </style>
