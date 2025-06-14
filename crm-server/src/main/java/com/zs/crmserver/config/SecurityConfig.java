@@ -1,16 +1,19 @@
 package com.zs.crmserver.config;
 
+import com.zs.crmserver.config.filter.TokenVerifyFilter;
 import com.zs.crmserver.config.handler.MyAuthenticationFailureHandler;
 import com.zs.crmserver.config.handler.MyAuthenticationSuccessHandler;
+import com.zs.crmserver.constants.Constants;
 import jakarta.annotation.Resource;
-import org.apache.tomcat.util.file.ConfigurationSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -26,6 +29,9 @@ public class SecurityConfig {
   @Resource
   private MyAuthenticationFailureHandler myAuthenticationFailureHandler;
 
+  @Resource
+  private TokenVerifyFilter tokenVerifyFilter;
+
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
@@ -36,7 +42,7 @@ public class SecurityConfig {
     // 禁用跨站请求伪造
     return httpSecurity
      .formLogin((formLogin) -> {
-       formLogin.loginProcessingUrl("/api/login")
+       formLogin.loginProcessingUrl(Constants.LOGIN_URI)
          .usernameParameter("loginAct")
          .passwordParameter("loginPwd")
          .successHandler(myAuthenticationSuccessHandler)
@@ -44,7 +50,7 @@ public class SecurityConfig {
      })
      .authorizeHttpRequests((authorizeHttpRequests) -> {
        authorizeHttpRequests
-         .requestMatchers("/api/login").permitAll()
+         .requestMatchers(Constants.LOGIN_URI).permitAll()
          .anyRequest().authenticated(); // 任何请求都需要登录后访问
      })
      // .csrf((csrf) -> {
@@ -56,6 +62,12 @@ public class SecurityConfig {
      .cors((cors) -> {
        cors.configurationSource(configurationSource);
      })
+     .sessionManagement((sessionManagement) -> {
+       // session 创建策略
+       sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS); // // 无session状态，禁用session
+     })
+     // 添加自定义的 Filter
+     .addFilterBefore(tokenVerifyFilter, LogoutFilter.class)
      .build();
   }
 

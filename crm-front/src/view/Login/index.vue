@@ -102,13 +102,14 @@ const rules = {
 
 const ruleFormRef = ref(null);
 
+const router = useRouter();
 const submitForm = () =>
-  ruleFormRef.value.validate((valid) => {
+  ruleFormRef.value.validate(async (valid) => {
     if (!valid) {
       return ElMessage.warning('请认真填写账号密码！');
     }
-
-    userStore.login(ruleForm);
+    await userStore.login(ruleForm);
+    router.push({ path: '/dashboard' });
   });
 
 const resetForm = () => ruleFormRef.value.resetFields();

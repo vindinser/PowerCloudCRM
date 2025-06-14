@@ -12,6 +12,12 @@ let router = createRouter({
       path: '/',
       // 路由路径所对应的页面
       component: () => import('@/view/Login')
+    },
+    {
+      //路由路径
+      path: '/dashboard',
+      //路由路径所对应的页面
+      component : () => import('@/view/Dashboard')
     }
   ]
 });

@@ -4,6 +4,7 @@ import qs from 'qs';
 import CryptoJS from 'crypto-js';
 import { ElMessage } from 'element-plus';
 import { v4 as uuidv4 } from 'uuid';
+import useUserStore from '@/store/modules/user';
 
 /**
  * 高级HTTP客户端
@@ -71,6 +72,7 @@ class HttpClient {
     this.defaultLoading = config.defaultLoading ?? true;
     this.defaultToken = config.defaultToken ?? true;
     this.operaName = '操作';
+    this.token = '';
 
     // Loading控制
     this.loadingCount = 0;
@@ -321,10 +323,14 @@ class HttpClient {
 
       // 处理Token
       if (config.token) {
-        const token = localStorage.getItem('token');
+        if(!this.token) {
+          const { token } = useUserStore();
 
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
+          this.token = token;
+        }
+
+        if (this.token) {
+          config.headers.Authorization = this.token;
         }
       }
       return config;

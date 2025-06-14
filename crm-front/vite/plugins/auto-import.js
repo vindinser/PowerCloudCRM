@@ -3,6 +3,8 @@ import Components from 'unplugin-vue-components/vite';
 import AutoImportEl from 'unplugin-auto-import/vite';
 import ComponentsEl from 'unplugin-vue-components/vite';
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
+import Icons from 'unplugin-icons/vite';
+import IconsResolver from 'unplugin-icons/resolver';
 
 const createAutoImport = () =>
   AutoImport({
@@ -22,9 +24,21 @@ const createAutoImportComponents = () =>
     resolvers: [ElementPlusResolver()]
   });
 
+const autoInstallIcons = () =>
+  Icons({
+    autoInstall: true
+  });
+
 const createAutoImportEl = () =>
   AutoImportEl({
-    resolvers: [ElementPlusResolver()],
+    resolvers: [
+      // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
+      ElementPlusResolver(),
+      // 自动导入图标组件
+      IconsResolver({
+        prefix: 'Icon'
+      })
+    ],
     eslintrc: {
       enabled: true, // 生成 ESLint 配置
       filepath: './.eslintrc-auto-import.json',
@@ -34,7 +48,14 @@ const createAutoImportEl = () =>
 
 const createAutoImportComponentsEl = () =>
   ComponentsEl({
-    resolvers: [ElementPlusResolver({ ssr: false, directives: false })],
+    resolvers: [
+      // 自动导入 Element Plus 组件
+      ElementPlusResolver({ ssr: false, directives: false }),
+      // 自动注册图标组件
+      IconsResolver({
+        enabledCollections: ['ep']
+      })
+    ],
     dirs: ['src/components'],
     dts: true
   });
@@ -42,6 +63,7 @@ const createAutoImportComponentsEl = () =>
 export {
   createAutoImport,
   createAutoImportComponents,
+  autoInstallIcons,
   createAutoImportEl,
   createAutoImportComponentsEl
 };

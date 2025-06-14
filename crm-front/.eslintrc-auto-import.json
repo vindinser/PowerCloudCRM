@@ -1,8 +1,9 @@
 {
   "globals": {
+    "ElLoading": true,
     "ElMessage": true,
     "ElMessageBox": true,
-    "ElLoading": true,
+    "ElNotification": true,
     "Component": true,
     "ComponentPublicInstance": true,
     "ComputedRef": true,

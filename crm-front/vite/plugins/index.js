@@ -3,6 +3,7 @@ import vue from '@vitejs/plugin-vue';
 import {
   createAutoImport,
   createAutoImportComponents,
+  autoInstallIcons,
   createAutoImportEl,
   createAutoImportComponentsEl
 } from './auto-import';
@@ -14,6 +15,7 @@ export default function createVitePlugins(viteEnv, isBuild = false) {
 
   vitePlugins.push(createAutoImport());
   vitePlugins.push(createAutoImportComponents());
+  vitePlugins.push(autoInstallIcons());
   vitePlugins.push(createAutoImportEl());
   vitePlugins.push(createAutoImportComponentsEl());
   // vitePlugins.push(createRefOmit());

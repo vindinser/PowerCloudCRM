@@ -2,7 +2,14 @@ import http from '@/core/http.js';
 
 export function login(params) {
   return http.post('/api/login', params, {
+    token: false,
     operaName: '登录'
+  });
+}
+
+export function getUserInfo() {
+  return http.get('/api/login/info', null, {
+    operaName: '获取登录用户信息'
   });
 }
 // export default {

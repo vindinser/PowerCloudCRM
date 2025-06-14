@@ -1,4 +1,4 @@
-import { login } from '@/api/login.js';
+import { login, getUserInfo } from '@/api/login.js';
 
 const useUserStore = defineStore('user', {
   state: () => ({
@@ -10,15 +10,22 @@ const useUserStore = defineStore('user', {
   actions: {
     // 登录
     login(ruleForm) {
-      let formData = new FormData();
+      return new Promise((resolve) => {
+        let formData = new FormData();
 
-      formData.append('loginAct', ruleForm.loginAct.trim());
-      formData.append('loginPwd', ruleForm.loginPwd.trim());
-      login(formData).then((res) => {
-        this.userInfo = res.data;
-        // 登录成功后的操作
-        ElMessageBox.alert('开发中敬请期待！', '温馨提示', {
-          confirmButtonText: 'OK'
+        formData.append('loginAct', ruleForm.loginAct.trim());
+        formData.append('loginPwd', ruleForm.loginPwd.trim());
+        formData.append('rememberMe', true);
+        login(formData).then(async (res) => {
+          if(res.code === 200) {
+            this.token = res.data;
+            const { data } = await getUserInfo();
+
+            this.userInfo = data;
+            resolve(res);
+          } else {
+            this.token = '';
+          }
         });
       });
     },
