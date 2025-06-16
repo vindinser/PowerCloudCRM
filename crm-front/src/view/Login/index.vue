@@ -23,6 +23,9 @@
         <el-form-item label="密码" prop="loginPwd">
           <el-input v-model="ruleForm.loginPwd" type="password" autocomplete="off" />
         </el-form-item>
+        <el-form-item label="">
+          <el-checkbox v-model="ruleForm.rememberLogin" label="记住我" />
+        </el-form-item>
       </el-form>
       <div class="content-btns">
         <el-button type="primary" @click="submitForm">登 录</el-button>
@@ -93,7 +96,8 @@ const particlesInit = async (engine) => {
 
 const ruleForm = reactive({
   loginAct: '',
-  loginPwd: ''
+  loginPwd: '',
+  rememberLogin: false
 });
 const rules = {
   loginAct: [{ required: true, trigger: 'blur', message: '用户名不能为空' }],
@@ -103,17 +107,32 @@ const rules = {
 const ruleFormRef = ref(null);
 
 const router = useRouter();
+const toDashboard = () => router.push({ path: '/dashboard' });
+
 const submitForm = () =>
   ruleFormRef.value.validate(async (valid) => {
     if (!valid) {
       return ElMessage.warning('请认真填写账号密码！');
     }
     await userStore.login(ruleForm);
-    router.push({ path: '/dashboard' });
+    toDashboard();
   });
 
 const resetForm = () => ruleFormRef.value.resetFields();
 
+onMounted(async () => {
+  const loginInfo = userStore.getLoginInfo();
+  const rememberLogin = loginInfo.rememberLogin;
+
+  if(rememberLogin) {
+    ruleForm.loginAct = loginInfo.loginAct;
+    ruleForm.loginPwd = loginInfo.loginPwd;
+    ruleForm.rememberLogin = rememberLogin;
+    await userStore.freeLogin();
+    toDashboard();
+  }
+
+});
 </script>
 
 <style lang="scss" scoped>
@@ -147,7 +166,7 @@ const resetForm = () => ruleFormRef.value.resetFields();
     border-radius: 6px;
     padding: 32px;
     width: 500px;
-    height: 300px;
+    height: 332px;
     transform: translate(-50%, -50%);
     background-color: rgb(0 0 0 / 50%);
     box-sizing: border-box;

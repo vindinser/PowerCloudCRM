@@ -12,6 +12,12 @@ export function getUserInfo() {
     operaName: '获取登录用户信息'
   });
 }
+
+export function freeLogin() {
+  return http.get('/api/login/free', null, {
+    operaName: '登录'
+  });
+}
 // export default {
 //   // 普通请求
 //   login: (params) => http.post('/api/login', params, {
