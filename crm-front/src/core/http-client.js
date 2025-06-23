@@ -5,6 +5,7 @@ import CryptoJS from 'crypto-js';
 import { ElMessage } from 'element-plus';
 import { v4 as uuidv4 } from 'uuid';
 import useUserStore from '@/store/modules/user';
+import modal from '@/plugins/modal.js';
 
 /**
  * 高级HTTP客户端
@@ -73,6 +74,7 @@ class HttpClient {
     this.defaultToken = config.defaultToken ?? true;
     this.operaName = '操作';
     this.token = '';
+    this.rememberLogin = false;
 
     // Loading控制
     this.loadingCount = 0;
@@ -329,10 +331,18 @@ class HttpClient {
           this.token = token;
         }
 
+        if(!this.rememberLogin) {
+          const { rememberLogin } = useUserStore();
+
+          this.rememberLogin = rememberLogin;
+        }
+
         if (this.token) {
           config.headers.Authorization = this.token;
+          config.headers.rememberMe = this.rememberLogin;
         }
       }
+
       return config;
     });
 
@@ -465,7 +475,7 @@ class HttpClient {
   _handleError(error, config) {
     const status = error.response?.status || error?.code;
 
-    if(status === 401) {
+    if(status > 900) {
       return this._redirectToLogin();
     }
     const message = error.response?.data?.message ?? error.message ?? error?.msg ?? '失败';
@@ -479,8 +489,15 @@ class HttpClient {
   }
 
   _redirectToLogin() {
-    ElMessage.warning('登录已过期，即将跳转...');
-    setTimeout(() => window.location.href = '/login', 2000);
+    modal.confirm('系统异常是否重新登录？').then(() => {
+      const { removeToken } = useUserStore();
+
+      removeToken();
+      // 跳到登录页
+      window.location.href = '/';
+    }).catch(() => {
+      modal.msg('取消操作');
+    });
   }
 
   /* -------------------- Loading控制 -------------------- */

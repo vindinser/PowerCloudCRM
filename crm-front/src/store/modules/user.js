@@ -1,5 +1,6 @@
-import { login, getUserInfo, freeLogin } from '@/api/login.js';
+import { login, getUserInfo, freeLogin, logout } from '@/api/login.js';
 import useAuthStore from './auth.js';
+import modal from '@/plugins/modal.js';
 
 const authStore = useAuthStore();
 
@@ -14,7 +15,7 @@ const useUserStore = defineStore('user', {
   actions: {
     // 登录
     login(ruleForm) {
-      return new Promise((resolve) => {
+      return new Promise((resolve, rej) => {
         let formData = new FormData();
 
         const rememberLogin = ruleForm.rememberLogin,
@@ -27,10 +28,16 @@ const useUserStore = defineStore('user', {
         login(formData).then(async (res) => {
           if(res.code === 200) {
             this.token = res.data;
-            const { data } = await getUserInfo();
-
             this.rememberLogin = rememberLogin;
-            this.userInfo = data;
+            try {
+              const { data } = await getUserInfo();
+
+              this.userInfo = data;
+            } catch(e) {
+              this.rememberLogin = false;
+              rej(e);
+            }
+
             if(rememberLogin) {
               authStore.remember({ loginAct, loginPwd });
             }
@@ -69,6 +76,29 @@ const useUserStore = defineStore('user', {
     },
     // 退出系统
     logOut() {
+      logout().then(res => {
+        if (res.code === 200) {
+          this.removeToken();
+          //跳到登录页
+          window.location.href = '/';
+        } else {
+          modal.confirm('退出异常，是否要强制退出？').then(() => {
+            // 用户点击“确定”按钮就会触发then函数
+            // 既然后端验证token未通过，那么前端的token肯定是有问题的，那没必要存储在浏览器中，直接删除一下
+            this.removeToken();
+            // 跳到登录页
+            window.location.href = '/';
+          }).catch(() => {
+            modal.msg('取消强制退出');
+          });
+        }
+      });
+    },
+    // 清除token、user信息等
+    removeToken() {
+      this.userInfo = {};
+      this.token = '';
+      this.rememberLogin = false;
       authStore.clearSecurityData();
     }
   }

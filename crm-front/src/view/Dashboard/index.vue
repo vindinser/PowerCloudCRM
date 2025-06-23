@@ -46,7 +46,7 @@
               <el-dropdown-menu>
                 <el-dropdown-item>我的资料</el-dropdown-item>
                 <el-dropdown-item>修改密码</el-dropdown-item>
-                <el-dropdown-item divided @click="logout">退出登录</el-dropdown-item>
+                <el-dropdown-item divided @click="logOut">退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -113,7 +113,7 @@ const showMenu = () => {
   isCollapse.value = !isCollapse.value;
 };
 
-const { userInfo } = useUserStore();
+const { userInfo, logOut } = useUserStore();
 
 console.log('🚀 ~ userInfo:', userInfo);
 // 登录用户对象，初始值是空
@@ -132,28 +132,6 @@ const loadCurrentRouterPath = () => {
   // } else {
   //   this.currentRouterPath = path;
   // }
-};
-
-// 退出登录
-const logout = () => {
-  console.log('退出登录');
-  // doGet("/api/logout", {}).then(resp => {
-  //   if (resp.data.code === 200) {
-  //     removeToken();
-  //     messageTip("退出成功", "success");
-  //     //跳到登录页
-  //     window.location.href = "/";
-  //   } else {
-  //     messageConfirm("退出异常，是否要强制退出？").then(() => { //用户点击“确定”按钮就会触发then函数
-  //       //既然后端验证token未通过，那么前端的token肯定是有问题的，那没必要存储在浏览器中，直接删除一下
-  //       removeToken();
-  //       //跳到登录页
-  //       window.location.href = "/";
-  //     }).catch(() => { //用户点击“取消”按钮就会触发then函数
-  //       messageTip("取消强制退出", "warning");
-  //     })
-  //   }
-  // })
 };
 
 onMounted(() => {

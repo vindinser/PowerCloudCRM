@@ -3,6 +3,7 @@ package com.zs.crmserver.config;
 import com.zs.crmserver.config.filter.TokenVerifyFilter;
 import com.zs.crmserver.config.handler.MyAuthenticationFailureHandler;
 import com.zs.crmserver.config.handler.MyAuthenticationSuccessHandler;
+import com.zs.crmserver.config.handler.MyLogoutSuccessHandler;
 import com.zs.crmserver.constants.Constants;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,9 @@ public class SecurityConfig {
 
   @Resource
   private MyAuthenticationFailureHandler myAuthenticationFailureHandler;
+
+  @Resource
+  private MyLogoutSuccessHandler myLogoutSuccessHandler;
 
   @Resource
   private TokenVerifyFilter tokenVerifyFilter;
@@ -64,10 +68,16 @@ public class SecurityConfig {
      })
      .sessionManagement((sessionManagement) -> {
        // session 创建策略
-       sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS); // // 无session状态，禁用session
+       sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS); // 无session状态，禁用session
      })
      // 添加自定义的 Filter
      .addFilterBefore(tokenVerifyFilter, LogoutFilter.class)
+
+     // 退出
+     .logout((logout) -> {
+         logout.logoutUrl("/api/logout") // 该地址不需要controller，由框架处理
+             .logoutSuccessHandler(myLogoutSuccessHandler);
+     })
      .build();
   }
 

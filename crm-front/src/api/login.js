@@ -18,6 +18,12 @@ export function freeLogin() {
     operaName: '登录'
   });
 }
+
+export function logout() {
+  return http.get('/api/logout', null, {
+    operaName: '退出登录'
+  });
+}
 // export default {
 //   // 普通请求
 //   login: (params) => http.post('/api/login', params, {
