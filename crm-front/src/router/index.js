@@ -17,7 +17,14 @@ let router = createRouter({
       //路由路径
       path: '/dashboard',
       //路由路径所对应的页面
-      component : () => import('@/view/Dashboard')
+      component : () => import('@/view/Dashboard'),
+      children: [
+        {
+          // 子路由路径不能以 / 开头
+          path: 'user',
+          component : () => import('@/view/User')
+        }
+      ]
     }
   ]
 });

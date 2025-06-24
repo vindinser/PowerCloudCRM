@@ -3,7 +3,7 @@
   <div>
     <el-container>
       <!--左侧-->
-      <el-aside :width="isCollapse ? '64px' : '200px'">
+      <el-aside :width="userStore.isCollapse ? '64px' : '200px'">
         <div class="menuTitle">PowerCloudCRM</div>
         <el-menu
           active-text-color="#ffd04b"
@@ -12,12 +12,14 @@
           :default-active="currentRouterPath"
           text-color="#fff"
           style="border-right: solid 0px;"
-          :collapse="isCollapse"
+          :collapse="userStore.isCollapse"
           :collapse-transition="false"
           :router="true"
-          :unique-opened="true">
+          :unique-opened="true"
+        >
 
-          <el-sub-menu :index="index" v-for="(menuPermission, index) in user.menuPermissionList" :key="menuPermission.id">
+          <!-- 动态路由 -->
+          <!-- <el-sub-menu :index="index" v-for="(menuPermission, index) in user.menuPermissionList" :key="menuPermission.id">
             <template #title>
               <el-icon><component :is="menuPermission.icon"/></el-icon>
               <span> {{menuPermission.name}} </span>
@@ -25,6 +27,20 @@
             <el-menu-item v-for="subPermission in menuPermission.subPermissionList" :key="subPermission.id" :index="subPermission.url">
               <el-icon><component :is="subPermission.icon"/></el-icon>
               {{subPermission.name}}
+            </el-menu-item>
+          </el-sub-menu> -->
+          <el-sub-menu index="7">
+            <template #title>
+              <el-icon>
+                <component :is="`CreditCard`"/>
+              </el-icon>
+              <span>用户管理</span>
+            </template>
+            <el-menu-item index="/dashboard/user">
+              <el-icon>
+                <component :is="`CreditCard`"/>
+              </el-icon>
+              <span>用户管理</span>
             </el-menu-item>
           </el-sub-menu>
         </el-menu>
@@ -35,18 +51,17 @@
       <el-container class="rightContent">
         <!--右侧：上-->
         <el-header>
-          <el-icon class="show" @click="showMenu"><Fold /></el-icon>
-
+          <el-icon class="show" @click="userStore.showMenu"><Fold /></el-icon>
           <el-dropdown :hide-on-click="false">
             <span class="el-dropdown-link">
-              {{ user.name }}
+              <span>{{ userStore.userInfo.name }}</span>
               <el-icon class="el-icon--right"><arrow-down /></el-icon>
             </span>
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item>我的资料</el-dropdown-item>
                 <el-dropdown-item>修改密码</el-dropdown-item>
-                <el-dropdown-item divided @click="logOut">退出登录</el-dropdown-item>
+                <el-dropdown-item divided @click="userStore.logOut">退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -106,18 +121,12 @@ provide(ReloadKey, () => {
 //   }
 // }
 
-// 控制左侧菜单左右的展开和折叠，true是折叠，false是展开
-const isCollapse = ref(false);
-//左侧菜单左右展开和折叠
-const showMenu = () => {
-  isCollapse.value = !isCollapse.value;
-};
+const userStore = useUserStore();
 
-const { userInfo, logOut } = useUserStore();
-
-console.log('🚀 ~ userInfo:', userInfo);
 // 登录用户对象，初始值是空
 const user = ref({});
+
+console.log('🚀 ~ userInfo:', userStore.userInfo);
 
 //当前访问的路由路径
 const currentRouterPath = ref('');

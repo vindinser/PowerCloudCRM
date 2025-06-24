@@ -1,6 +1,9 @@
 package com.zs.crmserver.service;
 
+import com.github.pagehelper.PageInfo;
+import com.zs.crmserver.model.TUser;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService extends UserDetailsService {
+    PageInfo<TUser> getUserByPage(Integer current, Integer size);
 }

@@ -8,7 +8,8 @@ const useUserStore = defineStore('user', {
   state: () => ({
     token: '',
     userInfo: {},
-    rememberLogin: false
+    rememberLogin: false,
+    isCollapse: false // 控制左侧菜单左右的展开和折叠，true是折叠，false是展开
   }),
   // 启用持久化
   persist: true,
@@ -100,6 +101,10 @@ const useUserStore = defineStore('user', {
       this.token = '';
       this.rememberLogin = false;
       authStore.clearSecurityData();
+    },
+    // 左侧菜单左右展开和折叠
+    showMenu() {
+      this.isCollapse = !this.isCollapse;
     }
   }
 });
