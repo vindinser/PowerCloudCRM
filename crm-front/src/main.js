@@ -5,7 +5,7 @@ import App from './App.vue';
 // import 'element-plus/dist/index.css';
 import VueParticles from 'particles.vue3';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue';
-// import './style.scss';
+import '@/assets/styles/index.scss'; // global css
 
 //从router.js中导入router组件
 import router from './router';

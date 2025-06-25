@@ -1,6 +1,9 @@
 <!-- 用户管理 -->
 <template>
-  <div>
+  <ZsList title="用户管理">
+    <template #body-search>
+      搜索
+    </template>
     <el-button type="primary">新增用户</el-button>
     <el-button type="danger">批量删除</el-button>
 
@@ -34,11 +37,12 @@
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
-  </div>
+  </ZsList>
 </template>
 
 <script setup name="User">
 import { getUsers } from '@/api/user.js';
+import ZsList from '@/components/ZSList';
 
 const multipleSelection = ref([]);
 const handleSelectionChange = (val) => {
