@@ -1,6 +1,7 @@
 package com.zs.crmserver.mapper;
 
 import com.zs.crmserver.model.TUser;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -19,5 +20,9 @@ public interface TUserMapper {
 
     TUser selectByLoginAct(String username);
 
-    List<TUser> selectUserByPage();
+    List<TUser> selectUserByPage(
+        @Param("keyword") String keyword,
+        @Param("sortField") String sortField,
+        @Param("sortOrder") String sortOrder
+    );
 }

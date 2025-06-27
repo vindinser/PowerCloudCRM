@@ -29,16 +29,16 @@ public class UserController {
     }
 
     @GetMapping("/api/users")
-    public R userPage(@RequestParam(value = "current", required = false) Integer current, @RequestParam(value = "size", required = false) Integer size) {
+    public R userPage(
+        @RequestParam(value = "page", defaultValue = "1") Integer page,
+        @RequestParam(value = "size", defaultValue = Constants.PAGE_SIZE) Integer size,
+        @RequestParam(value = "keyword", required = false) String keyword,
+        @RequestParam(value = "sortField", required = false) String sortField,
+        @RequestParam(value = "sortOrder", required = false) String sortOrder
+    ) {
         // required = false 表示参数可以传可以不传
         // required = true 表示参数必传（默认为true）
-        if(current==null) {
-            current = 1;
-        }
-        if(size==null) {
-            size = Constants.PAGE_SIZE;
-        }
-        PageInfo<TUser> userList = userService.getUserByPage(current, size);
+        PageInfo<TUser> userList = userService.getUserByPage(page, size, keyword, sortField, sortOrder);
         return R.OK(userList);
     }
 }

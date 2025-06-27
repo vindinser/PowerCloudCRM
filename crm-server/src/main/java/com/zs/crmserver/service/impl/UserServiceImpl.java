@@ -32,11 +32,11 @@ public class UserServiceImpl implements UserService {
   }
 
     @Override
-    public PageInfo<TUser> getUserByPage(Integer current, Integer size) {
+    public PageInfo<TUser> getUserByPage(Integer page, Integer size, String keyword, String sortField, String sortOrder) {
         // 1.设置PageHelper
-        PageHelper.startPage(current, size);
+        PageHelper.startPage(page, size);
         // 2.查询 BaseQuery.builder().build()
-        List<TUser> list = tUserMapper.selectUserByPage();
+        List<TUser> list = tUserMapper.selectUserByPage(keyword, sortField, sortOrder);
         // 3.封装分页数据到PageInfo
         PageInfo<TUser> info = new PageInfo<>(list);
         return info;

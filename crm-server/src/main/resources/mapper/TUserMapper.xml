@@ -22,16 +22,49 @@
     id, login_act, login_pwd, `name`, phone, email, account_no_expired, credentials_no_expired, 
     account_no_locked, account_enabled, create_time, create_by, edit_time, edit_by, last_login_time
   </sql>
+  <!-- 登录用户信息 -->
   <select id="selectByLoginAct" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_user
     where login_act = #{username,jdbcType=VARCHAR}
   </select>
+  <!-- 用户管理列表 -->
   <select id="selectUserByPage" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from t_user
+    <where>
+      <if test="keyword != null and keyword != ''">
+        AND (
+          name LIKE CONCAT('%', #{keyword}, '%')
+          OR phone LIKE CONCAT('%', #{keyword}, '%')
+          OR email LIKE CONCAT('%', #{keyword}, '%')
+          OR login_act LIKE CONCAT('%', #{keyword}, '%')
+        )
+      </if>
+    </where>
+    <!-- 安全排序处理 -->
+    <if test="sortField != null and sortField != ''">
+      ORDER BY
+      <choose>
+        <!-- 安全字段映射：只允许排序允许的字段 -->
+        <when test="sortField == 'name'">name</when>
+        <when test="sortField == 'email'">email</when>
+        <when test="sortField == 'createTime'">create_time</when>
+        <when test="sortField == 'loginAct'">login_act</when>
+        <!-- 默认按ID排序 -->
+        <otherwise>id</otherwise>
+      </choose>
+      <choose>
+        <when test="sortOrder != null and sortOrder == 'ascending'">ASC</when>
+        <otherwise>DESC</otherwise>
+      </choose>
+    </if>
+    <!-- 无排序参数时按默认根据创建时间排序 -->
+    <if test="sortField == null or sortField == ''">
+      ORDER BY create_time DESC
+    </if>
   </select>
 
 

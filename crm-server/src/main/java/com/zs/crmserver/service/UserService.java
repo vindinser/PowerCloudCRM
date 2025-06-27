@@ -5,5 +5,5 @@ import com.zs.crmserver.model.TUser;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService extends UserDetailsService {
-    PageInfo<TUser> getUserByPage(Integer current, Integer size);
+    PageInfo<TUser> getUserByPage(Integer page, Integer size, String keyword, String sortField, String sortOrder);
 }

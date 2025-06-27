@@ -20,8 +20,8 @@ public class Constants {
   // jwt过期时间30分钟
   public static final Long DEFAULT_EXPIRE_TIME = 30 * 60L;
 
-  // 分页时每页显示10条数据
-  public static final int PAGE_SIZE = 10;
+  // 分页时每页显示20条数据
+  public static final String PAGE_SIZE = "20";
 
   // 请求token的名称
   public static final String TOKEN_NAME = "Authorization";
