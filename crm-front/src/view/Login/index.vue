@@ -2,8 +2,8 @@
 <template>
   <div class="login">
     <vue-particles
-      class="particle-background"
       id="tsparticles"
+      class="particle-background"
       :particlesInit="particlesInit"
       :options="options"
     />
@@ -39,100 +39,100 @@
 </template>
 
 <script setup name="Login">
-import { loadFull } from 'tsparticles';
-import useUserStore from '@/store/modules/user';
+  import { loadFull } from 'tsparticles';
+  import useUserStore from '@/store/modules/user';
 
-const userStore = useUserStore();
+  const userStore = useUserStore();
 
-// 定义粒子配置选项
-const options = reactive({
-  fpsLimit: 60,
-  interactivity: {
-    events: {
-      onClick: { enable: true, mode: 'push' },
-      onHover: { enable: true, mode: 'repulse' },
-      resize: true
+  // 定义粒子配置选项
+  const options = reactive({
+    fpsLimit: 60,
+    interactivity: {
+      events: {
+        onClick: { enable: true, mode: 'push' },
+        onHover: { enable: true, mode: 'repulse' },
+        resize: true
+      },
+      modes: {
+        bubble: { distance: 400, duration: 2, opacity: 0.8, size: 40 },
+        push: { quantity: 4 },
+        repulse: { distance: 180, duration: 0.4 }
+      },
+      detectsOn: 'canvas'
     },
-    modes: {
-      bubble: { distance: 400, duration: 2, opacity: 0.8, size: 40 },
-      push: { quantity: 4 },
-      repulse: { distance: 180, duration: 0.4 }
+    particles: {
+      color: { value: '#D6F5C9' },
+      links: {
+        color: '#D6F5C9',
+        distance: 200,
+        enable: true,
+        opacity: 0.7,
+        width: 2
+      },
+      collisions: { enable: false },
+      move: {
+        direction: 'none',
+        enable: true,
+        outMode: 'bounce',
+        random: false,
+        speed: 2,
+        straight: false
+      },
+      number: {
+        density: { enable: true, area: 950 },
+        value: 50
+      },
+      opacity: { value: 1 },
+      shape: { type: 'star' },
+      size: { random: true, value: 7 }
     },
-    detectsOn: 'canvas'
-  },
-  particles: {
-    color: { value: '#D6F5C9' },
-    links: {
-      color: '#D6F5C9',
-      distance: 200,
-      enable: true,
-      opacity: 0.7,
-      width: 2
-    },
-    collisions: { enable: false },
-    move: {
-      direction: 'none',
-      enable: true,
-      outMode: 'bounce',
-      random: false,
-      speed: 2,
-      straight: false
-    },
-    number: {
-      density: { enable: true, area: 950 },
-      value: 50
-    },
-    opacity: { value: 1 },
-    shape: { type: 'star' },
-    size: { random: true, value: 7 }
-  },
-  detectRetina: true
-});
-
-// 初始化粒子库
-const particlesInit = async (engine) => {
-  await loadFull(engine);
-};
-
-const ruleForm = reactive({
-  loginAct: '',
-  loginPwd: '',
-  rememberLogin: false
-});
-const rules = {
-  loginAct: [{ required: true, trigger: 'blur', message: '用户名不能为空' }],
-  loginPwd: [{ required: true, trigger: 'blur', message: '密码不能为空' }]
-};
-
-const ruleFormRef = ref(null);
-
-const router = useRouter();
-const toDashboard = () => router.push({ path: '/dashboard' });
-
-const submitForm = () =>
-  ruleFormRef.value.validate(async (valid) => {
-    if (!valid) {
-      return ElMessage.warning('请认真填写账号密码！');
-    }
-    await userStore.login(ruleForm);
-    toDashboard();
+    detectRetina: true
   });
 
-const resetForm = () => ruleFormRef.value.resetFields();
+  // 初始化粒子库
+  const particlesInit = async (engine) => {
+    await loadFull(engine);
+  };
 
-onMounted(async () => {
-  const loginInfo = userStore.getLoginInfo();
-  const rememberLogin = loginInfo.rememberLogin;
+  const ruleForm = reactive({
+    loginAct: '',
+    loginPwd: '',
+    rememberLogin: false
+  });
+  const rules = {
+    loginAct: [{ required: true, trigger: 'blur', message: '用户名不能为空' }],
+    loginPwd: [{ required: true, trigger: 'blur', message: '密码不能为空' }]
+  };
 
-  if(rememberLogin) {
-    ruleForm.loginAct = loginInfo.loginAct;
-    ruleForm.loginPwd = loginInfo.loginPwd;
-    ruleForm.rememberLogin = rememberLogin;
-    await userStore.freeLogin();
-    toDashboard();
-  }
+  const ruleFormRef = ref(null);
 
-});
+  const router = useRouter();
+  const toDashboard = () => router.push({ path: '/dashboard' });
+
+  const submitForm = () =>
+    ruleFormRef.value.validate(async (valid) => {
+      if (!valid) {
+        return ElMessage.warning('请认真填写账号密码！');
+      }
+      await userStore.login(ruleForm);
+      toDashboard();
+    });
+
+  const resetForm = () => ruleFormRef.value.resetFields();
+
+  onMounted(async () => {
+    const loginInfo = userStore.getLoginInfo();
+    const rememberLogin = loginInfo.rememberLogin;
+
+    if(rememberLogin) {
+      ruleForm.loginAct = loginInfo.loginAct;
+      ruleForm.loginPwd = loginInfo.loginPwd;
+      ruleForm.rememberLogin = rememberLogin;
+      await userStore.freeLogin();
+      toDashboard();
+    }
+
+  });
 </script>
 
 <style lang="scss" scoped>

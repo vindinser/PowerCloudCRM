@@ -277,21 +277,56 @@ export default defineConfig([
       yoda: [2, 'never'], //禁止尤达条件
 
       // Vue 相关规则
-      'vue/html-indent': ['error', 2], // Vue 模板缩进
-      // Vue 文件脚本部分缩进规则
-      // 'vue/script-indent': ['error', 2, {
-      //   baseIndent: 1,                  // <script> 标签相对于模板的缩进
-      //   switchCase: 1,                   // case 子句缩进1级（即2空格）
-      //   ignores: [],                      // 不忽略任何情况// 确保不与其他缩进规则冲突
-      //   // indent: 'off'  // 关闭 ESLint 核心的 indent 规则
-      // }],
-      'vue/max-attributes-per-line': [
+      // 'vue/html-indent': ['error', 2], // Vue 模板缩进
+      // 'vue/max-attributes-per-line': [
+      //   'error',
+      //   {
+      //     singleline: 3,
+      //     multiline: 1
+      //   }
+      // ],
+
+      // Vue 模板缩进规则
+      'vue/html-indent': [
         'error',
+        2, // 基础缩进量
         {
-          singleline: 3,
-          multiline: 1
+          attribute: 1,         // 属性缩进1级（2×1=2空格）
+          baseIndent: 1,        // 基础缩进相对于外部元素
+          closeBracket: 0,      // 闭合标签的缩进量
+          alignAttributesVertically: true, // 垂直对齐属性
+          ignores: []           // 无例外情况
         }
       ],
+      'vue/script-indent': ['error', 2, {
+        baseIndent: 1
+      }],
+      // Vue 属性换行规则
+      'vue/max-attributes-per-line': ['error', {
+        singleline: {
+          max: 6
+        },
+        multiline: {
+          max: 1
+        }
+      }],
+      // Vue 属性顺序规则（可选）
+      'vue/attributes-order': ['error', {
+        order: [
+          'DEFINITION',
+          'LIST_RENDERING',
+          'CONDITIONALS',
+          'RENDER_MODIFIERS',
+          'GLOBAL',
+          'UNIQUE',
+          'TWO_WAY_BINDING',
+          'OTHER_DIRECTIVES',
+          'OTHER_ATTR',
+          'EVENTS',
+          'CONTENT'
+        ],
+        alphabetical: false // 不按字母顺序
+      }],
       'vue/html-self-closing': 'error', // 自闭合标签格式（可选）
       'vue/multi-word-component-names': 'off', // 关闭组件名必须多个单词的限制
       'vue/no-multiple-template-root': 'off' // 允许多个根节点
@@ -303,6 +338,7 @@ export default defineConfig([
     files: ['**/*.vue'],
     rules: {
       // Vue 特定规则
+      'indent': 'off', // 禁用标准缩进规则
       'vue/component-name-in-template-casing': ['error', 'PascalCase'],
       'vue/require-default-prop': 'off',
       'vue/multi-word-component-names': 'off'

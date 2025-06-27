@@ -24,10 +24,10 @@
         <!-- 收起搜索部分按钮 -->
         <el-tooltip effect="dark" :content="`${ bodySearchShow ? '收起' : '展开' }搜索条件`" placement="top">
           <el-icon
-            class="list-head__rt-icon"
             v-if="isBodySearch && isFold"
-            @click="bodySearchShow = !bodySearchShow"
+            class="list-head__rt-icon"
             :size="20"
+            @click="bodySearchShow = !bodySearchShow"
           >
             <ArrowDown v-if="bodySearchShow" />
             <ArrowUp v-else />
@@ -80,68 +80,68 @@
 </template>
 
 <script setup name="ZSList">
-import useUserStore from '@/store/modules/user';
-const userStore = useUserStore();
-const { loading, title, isBodyOther, isBodyNeck, isBodySearch, isBodyLeft, isBodyRight, isFold, fullScreenIsShow, isHead, isFull } = defineProps({
-  // 加载动画
-  loading: {
-    type: Boolean,
-    default: false
-  },
-  // 界面标题
-  title: {
-    type: String,
-    default: '全局列表组件'
-  },
-  // 是否加载列表 其他
-  isBodyOther: {
-    type: Boolean,
-    default: false
-  },
-  // 是否加载 其他
-  isBodyNeck: {
-    type: Boolean,
-    default: false
-  },
-  // 是否加载列表搜索
-  isBodySearch: {
-    type: Boolean,
-    default: true
-  },
-  // 是否加载列表左侧布局
-  isBodyLeft: {
-    type: Boolean,
-    default: false
-  },
-  // 是否加载列表右侧布局
-  isBodyRight: {
-    type: Boolean,
-    default: false
-  },
-  // 搜索区域是否可 收起/展开
-  isFold: {
-    type: Boolean,
-    default: true
-  },
-  // 是否可全屏
-  fullScreenIsShow: {
-    type: Boolean,
-    default: true
-  },
-  // 是否展示标题头部
-  isHead: {
-    type: Boolean,
-    default: true
-  },
-  // 是否全屏展示
-  isFull: {
-    type: Boolean,
-    default: false
-  }
-});
+  import useUserStore from '@/store/modules/user';
+  const userStore = useUserStore();
+  const { loading, title, isBodyOther, isBodyNeck, isBodySearch, isBodyLeft, isBodyRight, isFold, fullScreenIsShow, isHead, isFull } = defineProps({
+    // 加载动画
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    // 界面标题
+    title: {
+      type: String,
+      default: '全局列表组件'
+    },
+    // 是否加载列表 其他
+    isBodyOther: {
+      type: Boolean,
+      default: false
+    },
+    // 是否加载 其他
+    isBodyNeck: {
+      type: Boolean,
+      default: false
+    },
+    // 是否加载列表搜索
+    isBodySearch: {
+      type: Boolean,
+      default: true
+    },
+    // 是否加载列表左侧布局
+    isBodyLeft: {
+      type: Boolean,
+      default: false
+    },
+    // 是否加载列表右侧布局
+    isBodyRight: {
+      type: Boolean,
+      default: false
+    },
+    // 搜索区域是否可 收起/展开
+    isFold: {
+      type: Boolean,
+      default: true
+    },
+    // 是否可全屏
+    fullScreenIsShow: {
+      type: Boolean,
+      default: true
+    },
+    // 是否展示标题头部
+    isHead: {
+      type: Boolean,
+      default: true
+    },
+    // 是否全屏展示
+    isFull: {
+      type: Boolean,
+      default: false
+    }
+  });
 
-const bodySearchShow = ref(true);
-const isFullScreen = ref(false); // 是否全屏
+  const bodySearchShow = ref(true);
+  const isFullScreen = ref(false); // 是否全屏
 
 </script>
 

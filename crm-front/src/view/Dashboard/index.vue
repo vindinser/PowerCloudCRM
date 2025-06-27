@@ -81,58 +81,58 @@
 </template>
 
 <script setup name="Dashboard">
-import useUserStore from '@/store/modules/user';
+  import useUserStore from '@/store/modules/user';
 
-// 控制仪表盘页面右侧内容体是否显示，true显示，false不显示
-const isRouterAlive = ref(true);
+  // 控制仪表盘页面右侧内容体是否显示，true显示，false不显示
+  const isRouterAlive = ref(true);
 
-// 定义唯一 Symbol 键名 避免冲突
-const ReloadKey = Symbol('reload');
+  // 定义唯一 Symbol 键名 避免冲突
+  const ReloadKey = Symbol('reload');
 
-provide(ReloadKey, () => {
-  isRouterAlive.value = false;
-  nextTick(() => {
-    isRouterAlive.value = true;
+  provide(ReloadKey, () => {
+    isRouterAlive.value = false;
+    nextTick(() => {
+      isRouterAlive.value = true;
+    });
   });
-});
-// provide() {
-//   return {
-//     //提供一个函数（要求是箭头函数）
-//     reload: ()=> {
-//       this.isRouterAlive = false; //右侧内容隐藏
-//       this.$nextTick(() => { //$nextTick(), 当数据更新了，在dom中渲染后，自动执行该函数，
-//         this.isRouterAlive = true;
-//       })
-//     },
+  // provide() {
+  //   return {
+  //     //提供一个函数（要求是箭头函数）
+  //     reload: ()=> {
+  //       this.isRouterAlive = false; //右侧内容隐藏
+  //       this.$nextTick(() => { //$nextTick(), 当数据更新了，在dom中渲染后，自动执行该函数，
+  //         this.isRouterAlive = true;
+  //       })
+  //     },
 
-//     //提供一个字符串
-//     content: "是对负荷计算东方红郡凯撒的合法户籍卡",
+  //     //提供一个字符串
+  //     content: "是对负荷计算东方红郡凯撒的合法户籍卡",
 
-//     //提供一个数字
-//     age: 28,
+  //     //提供一个数字
+  //     age: 28,
 
-//     //提供一个对象
-//     user : {id: 1098, name: "张三", age: 18},
+  //     //提供一个对象
+  //     user : {id: 1098, name: "张三", age: 18},
 
-//     //提供一个数组
-//     arr : [12, 56, 109, 356, 8901]
+  //     //提供一个数组
+  //     arr : [12, 56, 109, 356, 8901]
 
-//     //......
-//   }
-// }
+  //     //......
+  //   }
+  // }
 
-const userStore = useUserStore();
+  const userStore = useUserStore();
 
-// 登录用户对象，初始值是空
-const user = ref({});
+  // 登录用户对象，初始值是空
+  const user = ref({});
 
-console.log('🚀 ~ userInfo:', userStore.userInfo);
+  console.log('🚀 ~ userInfo:', userStore.userInfo);
 
-//当前访问的路由路径
-const currentRouterPath = ref('');
-// 加载当前路由路径
-const loadCurrentRouterPath = () => {
-  console.log('加载当前路由路径');
+  //当前访问的路由路径
+  const currentRouterPath = ref('');
+  // 加载当前路由路径
+  const loadCurrentRouterPath = () => {
+    console.log('加载当前路由路径');
   // let path = this.$route.path; //   /dashboard/activity/add
   // let arr = path.split('/'); //   [  ,dashboard, activity, add]
 
@@ -141,11 +141,11 @@ const loadCurrentRouterPath = () => {
   // } else {
   //   this.currentRouterPath = path;
   // }
-};
+  };
 
-onMounted(() => {
-  loadCurrentRouterPath();
-});
+  onMounted(() => {
+    loadCurrentRouterPath();
+  });
 // watch(propData, (newVal, oldVal) => {})
 
 // defineExpose({}) // 将方法、数据暴露给父组件
