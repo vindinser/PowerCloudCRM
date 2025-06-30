@@ -25,4 +25,6 @@ public interface TUserMapper {
         @Param("sortField") String sortField,
         @Param("sortOrder") String sortOrder
     );
+
+    TUser selectDetailById(Integer id);
 }

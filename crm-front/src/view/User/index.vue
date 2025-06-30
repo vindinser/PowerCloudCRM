@@ -11,8 +11,8 @@
           </el-col>
           <el-col :xs="24" :sm="12" :md="8" :lg="6">
             <el-form-item label="">
-              <el-button type="primary" icon="el-icon-search" @click="onSearch">查询</el-button>
-              <el-button icon="el-icon-delete" @click="onReset">清除</el-button>
+              <el-button type="primary" :icon="Search" @click="onSearch">查询</el-button>
+              <el-button :icon="Delete" @click="onReset">清除</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -27,6 +27,7 @@
       @pagination="pagination"
       @sort-change="tableSortChange"
       @custom-list="tableChange"
+      @button-click="(({ row }) => openDetail('Detail', { row }))"
     >
       <template #head-right>
         <el-button type="primary">新增用户</el-button>
@@ -35,12 +36,16 @@
       <template #table-oper>
         <el-table-column label="操作" min-width="150">
           <template #default="scope">
+            <el-button type="primary" link @click="openDetail('Detail', scope)">详情</el-button>
             <el-button type="primary" link>编辑</el-button>
             <el-button type="danger" link>删除</el-button>
           </template>
         </el-table-column>
       </template>
     </ZsTable>
+    <template #list-detail>
+      <component :is='currentComponent' v-if="currentComponent" :row="currentRow" @closed="currentComponent = null" />
+    </template>
   </ZsList>
 </template>
 
@@ -48,14 +53,16 @@
   import { getUsers } from '@/api/user.js';
   import ZsList from '@/components/ZSList';
   import ZsTable from '@/components/ZSTable';
+  import UserDetail from './detail.vue';
+  import { Search, Delete } from '@element-plus/icons-vue';
 
   const formSearch = reactive({
     keyword: ''
   });
 
   const column = ref([
-    { show: true, prop: 'loginAct', label: '账号', width: '120' },
-    { show: true, prop: 'name', label: '姓名', width: '120' },
+    { show: true, prop: 'loginAct', label: '账号', width: '120', type: 'button' },
+    { show: true, prop: 'name', label: '姓名', width: '120', type: 'button' },
     { show: true, prop: 'phone', label: '手机', width: '120' },
     { show: true, prop: 'email', label: '邮箱', width: '150' },
     { show: true, prop: 'createTime', label: '创建时间', width: '200', sortable: 'custom' },
@@ -128,6 +135,18 @@
   // 自定义列表
   const tableChange = (columns) => {
     column.value = columns;
+  };
+
+  // 创建组件映射对象
+  const componentMap = {
+    Detail: markRaw(UserDetail)
+  };
+  const currentComponent = shallowRef(null);
+  const currentRow = shallowRef(null);
+  // 打开详情
+  const openDetail = (type = '', { row }) => {
+    currentRow.value = row;
+    currentComponent.value = componentMap[type];
   };
 
   onMounted(() => {

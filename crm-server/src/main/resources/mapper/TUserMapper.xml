@@ -22,6 +22,37 @@
     id, login_act, login_pwd, `name`, phone, email, account_no_expired, credentials_no_expired, 
     account_no_locked, account_enabled, create_time, create_by, edit_time, edit_by, last_login_time
   </sql>
+  <!-- 用户详情 -->
+  <resultMap id="UserResultMap" type="com.zs.crmserver.model.TUser">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="login_act" jdbcType="VARCHAR" property="loginAct" />
+    <result column="login_pwd" jdbcType="VARCHAR" property="loginPwd" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="account_no_expired" jdbcType="INTEGER" property="accountNoExpired" />
+    <result column="credentials_no_expired" jdbcType="INTEGER" property="credentialsNoExpired" />
+    <result column="account_no_locked" jdbcType="INTEGER" property="accountNoLocked" />
+    <result column="account_enabled" jdbcType="INTEGER" property="accountEnabled" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="INTEGER" property="createBy" />
+    <!-- <result column="create_id" jdbcType="INTEGER" property="id" /> -->
+    <!-- <result column="create_name" jdbcType="INTEGER" property="name" /> -->
+    <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
+    <result column="edit_by" jdbcType="INTEGER" property="editBy" />
+    <!-- <result column="edit_id" jdbcType="INTEGER" property="id" /> -->
+    <!-- <result column="edit_name" jdbcType="INTEGER" property="name" /> -->
+    <result column="last_login_time" jdbcType="TIMESTAMP" property="lastLoginTime" />
+    <!-- 一对一关系 -->
+    <association property="createInfo" javaType="com.zs.crmserver.model.TUser">
+      <result column="create_id" jdbcType="INTEGER" property="id" />
+      <result column="create_name" jdbcType="VARCHAR" property="name" />
+    </association>
+    <association property="editInfo" javaType="com.zs.crmserver.model.TUser">
+      <result column="edit_id" jdbcType="INTEGER" property="id" />
+      <result column="edit_name" jdbcType="VARCHAR" property="name" />
+    </association>
+  </resultMap>
   <!-- 登录用户信息 -->
   <select id="selectByLoginAct" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
@@ -66,6 +97,17 @@
       ORDER BY create_time DESC
     </if>
   </select>
+  <!-- 获取用户详情 -->
+  <select id="selectDetailById" parameterType="java.lang.Integer" resultMap="UserResultMap">
+    select
+        tu.*,
+        otu.id as create_id, otu.name as create_name,
+        atu.id as edit_id, atu.name as edit_name
+    from t_user tu
+        left join t_user otu on tu.create_by = otu.id
+        left join t_user atu on tu.edit_by = atu.id
+    where tu.id = #{id,jdbcType=INTEGER}
+  </select>
 
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -74,6 +116,7 @@
     from t_user
     where id = #{id,jdbcType=INTEGER}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_user
     where id = #{id,jdbcType=INTEGER}

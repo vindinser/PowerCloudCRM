@@ -80,7 +80,7 @@
                 <el-button
                   link
                   :size="size"
-                  style="border: none"
+                  :type="item.btnType || 'primary'"
                   :style="{ color: item.color || scope.row[item.isColor] }"
                   @click="buttonClick(item, scope.row)"
                 >{{ scope.row[item.prop] }}</el-button>

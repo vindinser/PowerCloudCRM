@@ -8,6 +8,7 @@ import com.zs.crmserver.service.UserService;
 import jakarta.annotation.Resource;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,5 +41,11 @@ public class UserController {
         // required = true 表示参数必传（默认为true）
         PageInfo<TUser> userList = userService.getUserByPage(page, size, keyword, sortField, sortOrder);
         return R.OK(userList);
+    }
+
+    @GetMapping("/api/user/{id}")
+    public R userDetail(@PathVariable(value = "id") Integer id) {
+        TUser tUser = userService.getUserById(id);
+        return R.OK(tUser);
     }
 }

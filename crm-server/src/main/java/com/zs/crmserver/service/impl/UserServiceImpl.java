@@ -2,7 +2,6 @@ package com.zs.crmserver.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.zs.crmserver.constants.Constants;
 import com.zs.crmserver.mapper.TUserMapper;
 import com.zs.crmserver.model.TUser;
 import com.zs.crmserver.service.UserService;
@@ -40,5 +39,12 @@ public class UserServiceImpl implements UserService {
         // 3.封装分页数据到PageInfo
         PageInfo<TUser> info = new PageInfo<>(list);
         return info;
+    }
+
+    @Override
+    public TUser getUserById(Integer id) {
+        // TUser tUser = tUserMapper.selectByPrimaryKey(id);
+        TUser tUser = tUserMapper.selectDetailById(id);
+        return tUser;
     }
 }
