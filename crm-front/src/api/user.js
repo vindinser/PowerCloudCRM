@@ -11,3 +11,9 @@ export const getUser = (id) => {
     operaName: '获取用户信息'
   });
 };
+
+export const addUser = (data) => {
+  return http.post('/api/user/add', data, {
+    operaName: '新增用户'
+  });
+};

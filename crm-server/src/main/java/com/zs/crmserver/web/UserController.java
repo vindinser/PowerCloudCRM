@@ -3,14 +3,12 @@ package com.zs.crmserver.web;
 import com.github.pagehelper.PageInfo;
 import com.zs.crmserver.constants.Constants;
 import com.zs.crmserver.model.TUser;
+import com.zs.crmserver.query.UserQuery;
 import com.zs.crmserver.result.R;
 import com.zs.crmserver.service.UserService;
 import jakarta.annotation.Resource;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
@@ -47,5 +45,14 @@ public class UserController {
     public R userDetail(@PathVariable(value = "id") Integer id) {
         TUser tUser = userService.getUserById(id);
         return R.OK(tUser);
+    }
+
+    @PostMapping("/api/user/add")
+    public R addUser(@RequestBody UserQuery userQuery, @RequestHeader("Authorization") String token) {
+        // 设置Token
+        userQuery.setToken(token);
+
+        int save = userService.saveUser(userQuery);
+        return save >= 1 ? R.OK() : R.FAIL();
     }
 }

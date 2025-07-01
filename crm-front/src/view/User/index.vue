@@ -30,7 +30,7 @@
       @button-click="(({ row }) => openDetail('Detail', { row }))"
     >
       <template #head-right>
-        <el-button type="primary">新增用户</el-button>
+        <el-button type="primary" :icon="Plus" @click="openDetail('Form', {})">新增用户</el-button>
         <el-button type="danger">批量删除</el-button>
       </template>
       <template #table-oper>
@@ -44,7 +44,7 @@
       </template>
     </ZsTable>
     <template #list-detail>
-      <component :is='currentComponent' v-if="currentComponent" :row="currentRow" @closed="currentComponent = null" />
+      <component :is='currentComponent' v-if="currentComponent" :row="currentRow" @closed="detailClose" />
     </template>
   </ZsList>
 </template>
@@ -54,7 +54,8 @@
   import ZsList from '@/components/ZSList';
   import ZsTable from '@/components/ZSTable';
   import UserDetail from './detail.vue';
-  import { Search, Delete } from '@element-plus/icons-vue';
+  import UserForm from './form.vue';
+  import { Search, Delete, Plus } from '@element-plus/icons-vue';
 
   const formSearch = reactive({
     keyword: ''
@@ -139,7 +140,8 @@
 
   // 创建组件映射对象
   const componentMap = {
-    Detail: markRaw(UserDetail)
+    Detail: markRaw(UserDetail),
+    Form: markRaw(UserForm)
   };
   const currentComponent = shallowRef(null);
   const currentRow = shallowRef(null);
@@ -147,6 +149,17 @@
   const openDetail = (type = '', { row }) => {
     currentRow.value = row;
     currentComponent.value = componentMap[type];
+  };
+
+  /**
+   * 详情、新增、修改用户 页面关闭
+   * @param {boolean} isRefresh 是否刷新列表
+   */
+  const detailClose = (reFresh) => {
+    currentComponent.value= '';
+    if(reFresh) {
+      onSearch();
+    }
   };
 
   onMounted(() => {
