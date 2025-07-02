@@ -50,11 +50,15 @@ export default {
     ElNotification.warning(content);
   },
   // 确认窗体
-  confirm(content) {
-    return ElMessageBox.confirm(content, '系统提示', {
-      confirmButtonText: '确定',
-      cancelButtonText: '取消',
-      type: 'warning'
+  confirm(content, config = {}) {
+    const { title = '系统提示', showCancelButton = true, type = 'warning', confirmButtonText = '确定', cancelButtonText = '取消' } = config;
+
+    return ElMessageBox.confirm(content, title, {
+      confirmButtonText,
+      cancelButtonText,
+      type,
+      showCancelButton,
+      closeOnPressEscape: showCancelButton
     });
   },
   // 提交内容

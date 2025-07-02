@@ -1,13 +1,13 @@
 <!-- 新增用户 -->
 <template>
-  <ZSDetail isFoot width="50%" title="新增用户" @closed="close()">
-    <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="auto" style="width: 75%;">
+  <ZSDetail isFoot width="50%" :title="`${ isEdit ? '修改用户信息' : '新增用户' }`" @closed="close()">
+    <el-form ref="ruleFormRef" :model="ruleForm" :rules="rules" label-width="108px" style="width: 75%;">
       <el-form-item v-for="item, index in descriptions" :key="index" :label="item.label" :prop="item.value">
         <el-radio-group v-if="item.type === 'radio'" v-model="ruleForm[item.value]">
           <el-radio :value="1">是</el-radio>
           <el-radio :value="0">否</el-radio>
         </el-radio-group>
-        <el-input v-else v-model="ruleForm[item.value]" :placeholder="`请输入${ item.label }`" clearable />
+        <el-input v-else v-model="ruleForm[item.value]" :placeholder="`请输入${ item.label }`" clearable :disabled="item.disabled" />
       </el-form-item>
     </el-form>
     <template #foot>
@@ -19,10 +19,17 @@
 
 <script setup name="UserForm">
   import ZSDetail from '@/components/ZSDetail';
-  import { addUser } from '@/api/user.js';
+  import { addUser, updateUser } from '@/api/user.js';
+  import useUserStore from '@/store/modules/user';
 
   const { proxy } = getCurrentInstance();
   const emit = defineEmits(['closed']);
+  const { row } = defineProps({
+    row: {
+      type: Object,
+      default: () => ({})
+    }
+  });
 
   /**
    * 关闭页面
@@ -32,8 +39,8 @@
     emit('closed', isRefresh);
   };
 
-  const descriptions = [
-    { label: '账号', value: 'loginAct' },
+  const descriptions = ref([
+    { label: '账号', value: 'loginAct', disabled: false },
     { label: '姓名', value: 'name' },
     { label: '密码', value: 'loginPwd' },
     { label: '手机号', value: 'phone' },
@@ -42,7 +49,7 @@
     { label: '密码未过期', value: 'credentialsNoExpired', type: 'radio' },
     { label: '账号未锁定', value: 'accountNoLocked', type: 'radio' },
     { label: '账号是否启用', value: 'accountEnabled', type: 'radio' }
-  ];
+  ]);
 
   const ruleForm = ref({});
   const rules = ref({});
@@ -78,9 +85,9 @@
   };
 
   // 初始化表单字段
-  const initForm = () => {
-    for(let k in descriptions) {
-      const { label, value, type } = descriptions[k];
+  (() => {
+    for(let k in descriptions.value) {
+      const { label, value, type } = descriptions.value[k];
 
       if(type === 'radio') {
         ruleForm.value[value] = 1;
@@ -93,9 +100,11 @@
         ];
       }
     }
-  };
+  })();
 
-  initForm();
+  const isEdit = ref(false);
+
+  const userStore = useUserStore();
 
   const ruleFormRef = ref(null);
   // 确认新增
@@ -114,13 +123,42 @@
         }
         return proxy.$modal.msgWarning(msg || '请认真填写表单！');
       }
-      const res = await addUser(ruleForm.value);
+      const res = isEdit.value ? await updateUser({
+        id: row.id,
+        ...ruleForm.value
+      }) : await addUser(ruleForm.value);
 
       if(res.code === 200) {
-        close(true);
+        if(res.data?.requireReLogin) {
+          userStore.onlyLogOut('密码修改，请重新登录', false);
+        } else {
+          close(true);
+        }
       }
     });
   };
+
+  // 获取用户回显信息
+  const getUserEcho = () => {
+    for(let k in ruleForm.value) {
+      if(k === 'loginPwd') {
+        continue;
+      }
+      ruleForm.value[k] = row[k] || '';
+    }
+  };
+
+  onMounted(() => {
+    const isAdd = proxy.$utils.isEmptyObject(row);
+
+    if(!isAdd) {
+      isEdit.value = true;
+      descriptions.value[0].disabled = true;
+      rules.value.loginAct[0].required = false;
+      rules.value.loginPwd[0].required = false;
+      getUserEcho();
+    }
+  });
 
 </script>
 

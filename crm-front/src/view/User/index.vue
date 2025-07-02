@@ -30,14 +30,14 @@
       @button-click="(({ row }) => openDetail('Detail', { row }))"
     >
       <template #head-right>
-        <el-button type="primary" :icon="Plus" @click="openDetail('Form', {})">新增用户</el-button>
+        <el-button type="primary" :icon="Plus" @click="openDetail('AddForm', {})">新增用户</el-button>
         <el-button type="danger">批量删除</el-button>
       </template>
       <template #table-oper>
         <el-table-column label="操作" min-width="150">
           <template #default="scope">
             <el-button type="primary" link @click="openDetail('Detail', scope)">详情</el-button>
-            <el-button type="primary" link>编辑</el-button>
+            <el-button type="primary" link @click="openDetail('EditForm', scope)">编辑</el-button>
             <el-button type="danger" link>删除</el-button>
           </template>
         </el-table-column>
@@ -141,7 +141,8 @@
   // 创建组件映射对象
   const componentMap = {
     Detail: markRaw(UserDetail),
-    Form: markRaw(UserForm)
+    AddForm: markRaw(UserForm),
+    EditForm: markRaw(UserForm)
   };
   const currentComponent = shallowRef(null);
   const currentRow = shallowRef(null);

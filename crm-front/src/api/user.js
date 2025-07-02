@@ -17,3 +17,9 @@ export const addUser = (data) => {
     operaName: '新增用户'
   });
 };
+
+export const updateUser = (data) => {
+  return http.put('/api/user/update', data, {
+    operaName: '修改用户信息'
+  });
+};

@@ -5,16 +5,25 @@ import com.zs.crmserver.constants.Constants;
 import com.zs.crmserver.model.TUser;
 import com.zs.crmserver.query.UserQuery;
 import com.zs.crmserver.result.R;
+import com.zs.crmserver.service.RedisService;
 import com.zs.crmserver.service.UserService;
+import com.zs.crmserver.util.JWTUtils;
 import jakarta.annotation.Resource;
 import org.springframework.security.core.Authentication;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class UserController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private RedisService redisService;
 
     @GetMapping("/api/login/info")
     public R loginInfo(Authentication authentication) {
@@ -54,5 +63,30 @@ public class UserController {
 
         int save = userService.saveUser(userQuery);
         return save >= 1 ? R.OK() : R.FAIL();
+    }
+
+    @PutMapping("/api/user/update")
+    public R updateUser(@RequestBody UserQuery userQuery, @RequestHeader("Authorization") String token) {
+        // 设置Token
+        userQuery.setToken(token);
+
+        // 当前登录用户ID
+        Integer loginUserId = JWTUtils.parseUserFromJWT(userQuery.getToken()).getId();
+        // 是否修改密码
+        boolean isEditPwd = StringUtils.hasText(userQuery.getLoginPwd());
+
+        int result = userService.updateUser(userQuery, loginUserId, isEditPwd);
+        if(result >= 1) {
+            // 操作成功，判断是否修改了自己的密码
+            if(loginUserId.equals(userQuery.getId()) && isEditPwd) {
+                redisService.removeValue(Constants.REDIS_JWT_KEY + loginUserId);
+                Map<String, Boolean> data = new HashMap<>();
+                data.put("requireReLogin", true);
+                return R.OK(data);
+            }
+            return R.OK();
+        } else {
+            return R.FAIL();
+        }
     }
 }

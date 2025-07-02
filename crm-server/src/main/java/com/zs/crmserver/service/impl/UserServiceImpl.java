@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -71,5 +72,25 @@ public class UserServiceImpl implements UserService {
         tUser.setCreateBy(loginUserId);
 
         return tUserMapper.insertSelective(tUser);
+    }
+
+    @Override
+    public int updateUser(UserQuery userQuery, Integer loginUserId, Boolean isEditPwd) {
+        TUser tUser = new TUser();
+        // 将userQuery中的数据复制到tUser中（要求：两个对象中的属性、属性类型要相同）
+        BeanUtils.copyProperties(userQuery,tUser);
+
+        // 是否修改密码
+        if(isEditPwd) {
+            // 密码加密
+            tUser.setLoginPwd(passwordEncoder.encode(userQuery.getLoginPwd()));
+        }
+
+        // 编辑时间
+        tUser.setEditTime(new Date());
+        // 编辑人
+        tUser.setEditBy(loginUserId);
+
+        return tUserMapper.updateByPrimaryKeySelective(tUser);
     }
 }

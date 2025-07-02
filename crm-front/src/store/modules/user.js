@@ -83,16 +83,19 @@ const useUserStore = defineStore('user', {
           //跳到登录页
           window.location.href = '/';
         } else {
-          modal.confirm('退出异常，是否要强制退出？').then(() => {
-            // 用户点击“确定”按钮就会触发then函数
-            // 既然后端验证token未通过，那么前端的token肯定是有问题的，那没必要存储在浏览器中，直接删除一下
-            this.removeToken();
-            // 跳到登录页
-            window.location.href = '/';
-          }).catch(() => {
-            modal.msg('取消强制退出');
-          });
+          this.onlyLogOut('退出异常，是否要强制退出？');
         }
+      });
+    },
+    // 前端退出系统
+    onlyLogOut(content, showCancelButton = true) {
+      modal.confirm(content, { showCancelButton }).then(() => {
+        // 既然后端验证token未通过，那么前端的token肯定是有问题的，那没必要存储在浏览器中，直接删除一下
+        this.removeToken();
+        // 跳到登录页
+        window.location.href = '/';
+      }).catch(() => {
+        modal.msg('取消强制退出');
       });
     },
     // 清除token、user信息等
