@@ -23,3 +23,17 @@ export const updateUser = (data) => {
     operaName: '修改用户信息'
   });
 };
+
+// 删除单个用户
+export const delUser = (id) => {
+  return http.delete(`api/user/${ id }`, null, {
+    operaName: '删除用户'
+  });
+};
+
+// 批量删除用户
+export const batchDelUser = (data) => {
+  return http.delete('api/user/del', data, {
+    operaName: '删除用户'
+  });
+};

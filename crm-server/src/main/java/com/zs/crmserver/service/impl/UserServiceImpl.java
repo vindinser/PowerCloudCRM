@@ -93,4 +93,14 @@ public class UserServiceImpl implements UserService {
 
         return tUserMapper.updateByPrimaryKeySelective(tUser);
     }
+
+    @Override
+    public int delUserById(Integer id) {
+        return tUserMapper.deleteByPrimaryKey(id);
+    }
+
+    @Override
+    public int batchDelUserByIds(Integer[] ids) {
+        return tUserMapper.deleteByIds(ids);
+    }
 }

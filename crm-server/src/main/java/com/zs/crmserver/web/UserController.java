@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -88,5 +89,17 @@ public class UserController {
         } else {
             return R.FAIL();
         }
+    }
+
+    @DeleteMapping("/api/user/{id}")
+    public R delUser(@PathVariable(value = "id") Integer id) {
+        int del = userService.delUserById(id);
+        return del >= 1 ? R.OK() : R.FAIL();
+    }
+
+    @DeleteMapping("/api/user/del")
+    public R batchDelUser(@RequestParam(value = "ids") Integer[] ids) {
+        int batchDel = userService.batchDelUserByIds(ids);
+        return batchDel >= 1 ? R.OK() : R.FAIL();
     }
 }

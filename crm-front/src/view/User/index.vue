@@ -20,6 +20,7 @@
     </template>
 
     <ZsTable
+      isSelection
       :columns="column"
       :list="tableData.list"
       :loading="tableData.loading"
@@ -27,18 +28,19 @@
       @pagination="pagination"
       @sort-change="tableSortChange"
       @custom-list="tableChange"
+      @selection-change="handleSelectionChange"
       @button-click="(({ row }) => openDetail('Detail', { row }))"
     >
       <template #head-right>
         <el-button type="primary" :icon="Plus" @click="openDetail('AddForm', {})">新增用户</el-button>
-        <el-button type="danger">批量删除</el-button>
+        <el-button type="danger" @click="bacthDeleteUser">批量删除</el-button>
       </template>
       <template #table-oper>
         <el-table-column label="操作" min-width="150">
           <template #default="scope">
             <el-button type="primary" link @click="openDetail('Detail', scope)">详情</el-button>
             <el-button type="primary" link @click="openDetail('EditForm', scope)">编辑</el-button>
-            <el-button type="danger" link>删除</el-button>
+            <el-button type="danger" link @click="deleteUser(scope)">删除</el-button>
           </template>
         </el-table-column>
       </template>
@@ -50,12 +52,14 @@
 </template>
 
 <script setup name="User">
-  import { getUsers } from '@/api/user.js';
+  import { getUsers, delUser, batchDelUser } from '@/api/user.js';
   import ZsList from '@/components/ZSList';
   import ZsTable from '@/components/ZSTable';
   import UserDetail from './detail.vue';
   import UserForm from './form.vue';
   import { Search, Delete, Plus } from '@element-plus/icons-vue';
+
+  const { proxy } = getCurrentInstance();
 
   const formSearch = reactive({
     keyword: ''
@@ -161,6 +165,40 @@
     if(reFresh) {
       onSearch();
     }
+  };
+
+  const deleteUser = ({ row: { id } }) => {
+    proxy.$modal.confirm('操作将永久删除用户，是否确认？').then(async () => {
+      const res = await delUser(id);
+
+      if(res.code === 200) {
+        getTableData();
+      }
+    }).catch(() => {
+      proxy.$modal.msg('取消操作');
+    });
+  };
+
+  const batchList = ref([]);
+  const handleSelectionChange = (rows) => {
+    batchList.value = rows;
+  };
+
+  const bacthDeleteUser = async () => {
+    if(batchList.value.length <= 0) {
+      return proxy.$modal.msgWarning('请选择需要批量操作的数据！');
+    }
+    proxy.$modal.confirm('操作将删除用户，是否确认？').then(async () => {
+      const ids = batchList.value.map(({ id }) => id);
+
+      const res = await batchDelUser({ ids });
+
+      if(res.code === 200) {
+        getTableData();
+      }
+    }).catch(() => {
+      proxy.$modal.msg('取消操作');
+    });
   };
 
   onMounted(() => {

@@ -117,10 +117,20 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
+  <!-- 删除单个用户 -->
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_user
     where id = #{id,jdbcType=INTEGER}
   </delete>
+  <!-- 批量删除用户 -->
+  <delete id="deleteByIds" parameterType="java.util.List">
+    delete from t_user
+    where id in
+    <foreach collection="ids" item="id" open="(" close=")" separator=",">
+      #{id,jdbcType=INTEGER}
+    </foreach>
+  </delete>
+
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.zs.crmserver.model.TUser" useGeneratedKeys="true">
     insert into t_user (login_act, login_pwd, `name`, 
       phone, email, account_no_expired, 
