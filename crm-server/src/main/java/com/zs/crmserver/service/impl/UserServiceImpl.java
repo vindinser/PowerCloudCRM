@@ -2,8 +2,11 @@ package com.zs.crmserver.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.zs.crmserver.mapper.TRoleMapper;
 import com.zs.crmserver.mapper.TUserMapper;
+import com.zs.crmserver.model.TRole;
 import com.zs.crmserver.model.TUser;
+import com.zs.crmserver.query.BaseQuery;
 import com.zs.crmserver.query.UserQuery;
 import com.zs.crmserver.service.UserService;
 import com.zs.crmserver.util.JWTUtils;
@@ -15,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +32,10 @@ public class UserServiceImpl implements UserService {
     @Resource
     private PasswordEncoder passwordEncoder;
 
+    // 角色
+    @Resource
+    private TRoleMapper tRoleMapper;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
@@ -37,6 +45,16 @@ public class UserServiceImpl implements UserService {
             throw new UsernameNotFoundException("登录账号不存在");
         }
 
+        // 查询用户角色
+        List<TRole> tRoleList = tRoleMapper.selectByUserId(tuser.getId());
+
+        List<String> stringRoleList = new ArrayList<>();
+        tRoleList.forEach(tRole -> {
+            stringRoleList.add(tRole.getRole());
+        });
+
+        tuser.setRoleList(stringRoleList);
+
         return tuser;
     }
 
@@ -44,8 +62,8 @@ public class UserServiceImpl implements UserService {
     public PageInfo<TUser> getUserByPage(Integer page, Integer size, String keyword, String sortField, String sortOrder) {
         // 1.设置PageHelper
         PageHelper.startPage(page, size);
-        // 2.查询 BaseQuery.builder().build()
-        List<TUser> list = tUserMapper.selectUserByPage(keyword, sortField, sortOrder);
+        // 2.查询
+        List<TUser> list = tUserMapper.selectUserByPage(BaseQuery.builder().build(), keyword, sortField, sortOrder);
         // 3.封装分页数据到PageInfo
         PageInfo<TUser> info = new PageInfo<>(list);
         return info;

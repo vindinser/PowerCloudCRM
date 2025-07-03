@@ -64,7 +64,7 @@
   <select id="selectUserByPage" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from t_user
+    from t_user tu
     <where>
       <if test="keyword != null and keyword != ''">
         AND (
@@ -74,6 +74,7 @@
           OR login_act LIKE CONCAT('%', #{keyword}, '%')
         )
       </if>
+      ${ query.filterSQL }
     </where>
     <!-- 安全排序处理 -->
     <if test="sortField != null and sortField != ''">
