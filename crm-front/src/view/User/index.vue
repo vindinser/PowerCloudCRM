@@ -1,6 +1,6 @@
 <!-- 用户管理 -->
 <template>
-  <ZsList title="用户管理">
+  <component :is="list.List" title="用户管理">
     <template #body-search>
       <el-form ref="formSearchRef" :model="formSearch" label-width="100px">
         <el-row :gutter="20">
@@ -11,56 +11,57 @@
           </el-col>
           <el-col :xs="24" :sm="12" :md="8" :lg="6">
             <el-form-item label="">
-              <el-button type="primary" :icon="Search" @click="onSearch">查询</el-button>
-              <el-button :icon="Delete" @click="onReset">清除</el-button>
+              <div v-if="list.currentComponent">1{{ list.currentComponent.value ? '-1-' : '2--' }}</div>
+              <div v-else>2</div>
+              <el-button type="primary" :icon="Search" @click="list.onSearch">查询</el-button>
+              <el-button :icon="Delete" @click="list.onReset">清除</el-button>
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
     </template>
 
-    <ZsTable
+    <component
+      :is="list.Table"
       isSelection
-      :columns="column"
-      :list="tableData.list"
-      :loading="tableData.loading"
-      :list-query="tableData.listQuery"
-      @pagination="pagination"
-      @sort-change="tableSortChange"
-      @custom-list="tableChange"
-      @selection-change="handleSelectionChange"
-      @button-click="(({ row }) => openDetail('Detail', { row }))"
+      :columns="list.tableData.column"
+      :list="list.tableData.list"
+      :loading="list.tableData.loading"
+      :list-query="list.tableData.listQuery"
+      @pagination="list.pagination"
+      @sort-change="list.tableSortChange"
+      @custom-list="list.tableChange"
+      @selection-change="list.selecteChange"
+      @button-click="(({ row }) => list.openDetail('Detail', { row }))"
     >
       <template #head-right>
-        <el-button type="primary" :icon="Plus" @click="openDetail('AddForm', {})">新增用户</el-button>
-        <el-button type="danger" @click="bacthDeleteUser">批量删除</el-button>
+        <el-button type="primary" :icon="Plus" @click="list.openDetail('AddForm', {})">新增用户</el-button>
+        <el-button type="danger" @click="list.openDetail('batch', {}, '删除')">批量删除</el-button>
       </template>
       <template #table-oper>
         <el-table-column label="操作" min-width="150">
           <template #default="scope">
-            <el-button type="primary" link @click="openDetail('Detail', scope)">详情</el-button>
-            <el-button type="primary" link @click="openDetail('EditForm', scope)">编辑</el-button>
-            <el-button type="danger" link @click="deleteUser(scope)">删除</el-button>
+            <el-button type="primary" link @click="list.openDetail('Detail', scope)">详情</el-button>
+            <el-button type="primary" link @click="list.openDetail('EditForm', scope)">编辑</el-button>
+            <el-button type="danger" link @click="list.openDetail('del', scope, '删除')">删除</el-button>
           </template>
         </el-table-column>
       </template>
-    </ZsTable>
+    </component>
     <template #list-detail>
-      <component :is='currentComponent' v-if="currentComponent" :row="currentRow" @closed="detailClose" />
+      <component :is='componentMap[list.currentComponent.value]' :row="list.currentRow.value" @closed="list.detailClose" />
     </template>
-  </ZsList>
+  </component>
 </template>
 
 <script setup name="User">
-  import { getUsers, delUser, batchDelUser } from '@/api/user.js';
-  import ZsList from '@/components/ZSList';
-  import ZsTable from '@/components/ZSTable';
+  import { delUser, batchDelUser } from '@/api/user.js';
   import UserDetail from './detail.vue';
   import UserForm from './form.vue';
   import { Search, Delete, Plus } from '@element-plus/icons-vue';
+  import { useList } from '@/composables/useList.js';
 
-  const { proxy } = getCurrentInstance();
-
+  const formSearchRef = ref(null);
   const formSearch = reactive({
     keyword: ''
   });
@@ -74,72 +75,21 @@
     { show: true, prop: 'editTime', label: '修改时间', width: '200', sortable: 'custom' }
   ]);
 
-  const tableData = reactive({
-    list: [],
-    listQuery: {
-      page: 1,
-      size: 20,
-      total: 0
-    },
-    defaultSort: {
-      prop: '',
-      order: ''
-    } // 排序
+  const getTableDataParam = () => ({
+    apiChain: ['user', 'getUsers'],
+    param: {
+      keyword: formSearch.keyword
+    }
   });
 
-  const getTableData = () => {
-    getUsers({
-      page: tableData.listQuery.page,
-      size: tableData.listQuery.size,
-      keyword: formSearch.keyword,
-      sortField: tableData.defaultSort.prop,
-      sortOrder: tableData.defaultSort.order
-    }).then((res) => {
-      if(res.code === 200) {
-        tableData.list = res.data.list;
-        tableData.listQuery.total = res.data.total;
-      } else {
-        tableData.list = [];
-        tableData.listQuery.total = 0;
-      }
-    }).catch(() => {
-      tableData.list = [];
-      tableData.listQuery.total = 0;
-    });
-  };
+  const postRedOperaFn = (row, isBatch, type, batchList) => {
+    if(isBatch) {
+      const ids = batchList.map(({ id }) => id);
 
-  const pagination = ({ page, size }) => {
-    if(tableData.listQuery.size !== size) {
-      tableData.listQuery.page = 1;
-    } else {
-      tableData.listQuery.page = page;
+      return batchDelUser({ ids });
     }
-    tableData.listQuery.size = size;
-    getTableData();
-  };
+    return delUser(row.id);
 
-  const onSearch = () => {
-    tableData.listQuery.page = 1;
-    getTableData();
-  };
-
-  const formSearchRef = ref(null);
-  const onReset = () => {
-    formSearchRef.value.resetFields();
-    onSearch();
-  };
-
-  // 表格排序改变
-  const tableSortChange = ({ prop, order }) => {
-    tableData.defaultSort.prop = prop;
-    tableData.defaultSort.order = order;
-    onSearch();
-  };
-
-
-  // 自定义列表
-  const tableChange = (columns) => {
-    column.value = columns;
   };
 
   // 创建组件映射对象
@@ -148,62 +98,14 @@
     AddForm: markRaw(UserForm),
     EditForm: markRaw(UserForm)
   };
-  const currentComponent = shallowRef(null);
-  const currentRow = shallowRef(null);
-  // 打开详情
-  const openDetail = (type = '', { row }) => {
-    currentRow.value = row;
-    currentComponent.value = componentMap[type];
-  };
 
-  /**
-   * 详情、新增、修改用户 页面关闭
-   * @param {boolean} isRefresh 是否刷新列表
-   */
-  const detailClose = (reFresh) => {
-    currentComponent.value= '';
-    if(reFresh) {
-      onSearch();
-    }
-  };
-
-  const deleteUser = ({ row: { id } }) => {
-    proxy.$modal.confirm('操作将永久删除用户，是否确认？').then(async () => {
-      const res = await delUser(id);
-
-      if(res.code === 200) {
-        getTableData();
-      }
-    }).catch(() => {
-      proxy.$modal.msg('取消操作');
-    });
-  };
-
-  const batchList = ref([]);
-  const handleSelectionChange = (rows) => {
-    batchList.value = rows;
-  };
-
-  const bacthDeleteUser = async () => {
-    if(batchList.value.length <= 0) {
-      return proxy.$modal.msgWarning('请选择需要批量操作的数据！');
-    }
-    proxy.$modal.confirm('操作将删除用户，是否确认？').then(async () => {
-      const ids = batchList.value.map(({ id }) => id);
-
-      const res = await batchDelUser({ ids });
-
-      if(res.code === 200) {
-        getTableData();
-      }
-    }).catch(() => {
-      proxy.$modal.msg('取消操作');
-    });
-  };
-
-  onMounted(() => {
-    getTableData();
+  const list = useList({
+    formSearchRef,
+    getTableDataParam,
+    postRedOperaFn,
+    column
   });
+
 </script>
 
 <style lang="scss" scoped>
