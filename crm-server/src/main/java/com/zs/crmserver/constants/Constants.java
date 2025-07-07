@@ -22,6 +22,7 @@ public class Constants {
 
   // 分页时每页显示20条数据
   public static final String PAGE_SIZE = "20";
+  public static final Integer DEFAULT_PAGE_SIZE = 20;
 
   // 请求token的名称
   public static final String TOKEN_NAME = "Authorization";

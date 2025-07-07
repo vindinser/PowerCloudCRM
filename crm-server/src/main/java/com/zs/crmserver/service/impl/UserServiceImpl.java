@@ -1,22 +1,22 @@
 package com.zs.crmserver.service.impl;
 
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zs.crmserver.mapper.TRoleMapper;
 import com.zs.crmserver.mapper.TUserMapper;
 import com.zs.crmserver.model.TRole;
 import com.zs.crmserver.model.TUser;
+import com.zs.crmserver.query.BasePageQuery;
 import com.zs.crmserver.query.BaseQuery;
 import com.zs.crmserver.query.UserQuery;
 import com.zs.crmserver.service.UserService;
 import com.zs.crmserver.util.JWTUtils;
+import com.zs.crmserver.util.PageHelperUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,14 +59,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageInfo<TUser> getUserByPage(Integer page, Integer size, String keyword, String sortField, String sortOrder) {
-        // 1.设置PageHelper
-        PageHelper.startPage(page, size);
-        // 2.查询
-        List<TUser> list = tUserMapper.selectUserByPage(BaseQuery.builder().build(), keyword, sortField, sortOrder);
-        // 3.封装分页数据到PageInfo
-        PageInfo<TUser> info = new PageInfo<>(list);
-        return info;
+    public PageInfo<TUser> getUserByPage(BasePageQuery query, String keyword) {
+        return PageHelperUtils.pageQuery(
+            query,
+            () -> tUserMapper.selectUserByPage(BaseQuery.builder().build(), query, keyword)
+        );
+        // // 1.设置PageHelper
+        // PageHelper.startPage(query.getPage(), query.getSize());
+        // // 2.查询
+        // List<TUser> list = tUserMapper.selectUserByPage(BaseQuery.builder().build(), query, keyword);
+        // // 3.封装分页数据到PageInfo
+        // PageInfo<TUser> info = new PageInfo<>(list);
+        // return info;
     }
 
     @Override

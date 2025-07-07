@@ -79,7 +79,7 @@ export const useList = ({
       handelListData(((success) => ({
         ...success && {
           total: data.data.total,
-          ListData: data.data.list,
+          ListData: data.ListData,
           dataMap: data.data
         }
       }))(data.code === 200 || data.success))
@@ -157,7 +157,7 @@ export const useList = ({
     const success = data.code === 200 || data.success;
 
     if (isRefresh && success) {
-      if (isHasTree.value) {
+      if (isHasTree) {
         onSearch();
       } else {
         getTableData();
@@ -207,7 +207,7 @@ export const useList = ({
 
   // 生命周期
   onMounted(() => {
-    if (isMountedLoad.value) {
+    if (isMountedLoad) {
       getTableData();
     }
   });
@@ -221,7 +221,6 @@ export const useList = ({
     currentRow,
     currentComponent,
     batchList,
-    isMountedLoad,
     tableSortChange,
     tableChange,
     pagination,

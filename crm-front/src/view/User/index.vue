@@ -11,8 +11,6 @@
           </el-col>
           <el-col :xs="24" :sm="12" :md="8" :lg="6">
             <el-form-item label="">
-              <div v-if="list.currentComponent">1{{ list.currentComponent.value ? '-1-' : '2--' }}</div>
-              <div v-else>2</div>
               <el-button type="primary" :icon="Search" @click="list.onSearch">查询</el-button>
               <el-button :icon="Delete" @click="list.onReset">清除</el-button>
             </el-form-item>

@@ -2,6 +2,7 @@ package com.zs.crmserver.mapper;
 
 import com.zs.crmserver.commons.DataScope;
 import com.zs.crmserver.model.TUser;
+import com.zs.crmserver.query.BasePageQuery;
 import com.zs.crmserver.query.BaseQuery;
 import org.springframework.data.repository.query.Param;
 
@@ -25,9 +26,8 @@ public interface TUserMapper {
     @DataScope(tableAlias = "tu", tableField = "id")
     List<TUser> selectUserByPage(
         BaseQuery query,
-        @Param("keyword") String keyword,
-        @Param("sortField") String sortField,
-        @Param("sortOrder") String sortOrder
+        BasePageQuery pageQuery,
+        @Param("keyword") String keyword
     );
 
     TUser selectDetailById(Integer id);
