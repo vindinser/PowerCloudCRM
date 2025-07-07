@@ -25,6 +25,7 @@ public class R {
     private String msg;
 
     // 表示返回的结果数据，数据可能是一个对象，也可以是一个List集合.....
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Object data;
 
     // 分页数据列表

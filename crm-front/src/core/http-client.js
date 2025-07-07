@@ -475,7 +475,7 @@ class HttpClient {
   _handleError(error, config) {
     const status = error.response?.status || error?.code;
 
-    if(status > 900) {
+    if(status === 401 || status > 900) {
       return this._redirectToLogin();
     }
     const message = error.response?.data?.message ?? error.message ?? error?.msg ?? '失败';

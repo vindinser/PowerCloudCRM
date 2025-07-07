@@ -24,9 +24,9 @@ public enum CodeEnum {
 
     DATA_ACCESS_EXCEPTION(500,"数据库操作失败"),
 
-    ACCESS_DENIED(500, "权限不足")
+    ACCESS_DENIED(500, "权限不足"),
 
-    ;
+    PATH_NOT_FOUND(404, "访问资源不存在");
 
     //结果码
     private int code;

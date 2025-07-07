@@ -51,12 +51,15 @@ public class TokenVerifyFilter extends OncePerRequestFilter {
             }
 
             if (!StringUtils.hasText(token)) {
-                //token验证未通过的统一结果
-                R result = R.FAIL(CodeEnum.TOKEN_IS_EMPTY);
-                //把R对象转成json
-                String resultJSON = JSONUtils.toJSON(result);
-                //把R以json返回给前端
-                ResponseUtils.write(response, resultJSON);
+                // //token验证未通过的统一结果
+                // R result = R.FAIL(CodeEnum.TOKEN_IS_EMPTY);
+                // //把R对象转成json
+                // String resultJSON = JSONUtils.toJSON(result);
+                // //把R以json返回给前端
+                // ResponseUtils.write(response, resultJSON);
+
+                // 将请求继续传递，由后续的Spring Security过滤器处理
+                filterChain.doFilter(request, response);
                 return;
             }
 

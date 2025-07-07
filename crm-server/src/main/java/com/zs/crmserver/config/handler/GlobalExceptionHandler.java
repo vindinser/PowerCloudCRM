@@ -4,9 +4,13 @@ import com.zs.crmserver.result.CodeEnum;
 import com.zs.crmserver.result.R;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -52,5 +56,17 @@ public class GlobalExceptionHandler {
     public R handException(AccessDeniedException e) {
         e.printStackTrace(); //在控制台打印异常信息
         return R.FAIL(CodeEnum.ACCESS_DENIED);
+    }
+
+    // @ExceptionHandler(NoResourceFoundException.class)
+    // @ResponseStatus(HttpStatus.NOT_FOUND)
+    // public R handleResourceNotFound(NoResourceFoundException ex) {
+    //     return R.FAIL(CodeEnum.PATH_NOT_FOUND);
+    // }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public R handleNotFound(NoHandlerFoundException ex) {
+        return R.FAIL(CodeEnum.PATH_NOT_FOUND);
     }
 }

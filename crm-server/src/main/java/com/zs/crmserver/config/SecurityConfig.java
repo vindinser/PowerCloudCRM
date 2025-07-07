@@ -1,6 +1,7 @@
 package com.zs.crmserver.config;
 
 import com.zs.crmserver.config.filter.TokenVerifyFilter;
+import com.zs.crmserver.config.handler.ExceptionHandlerProvider;
 import com.zs.crmserver.config.handler.MyAuthenticationFailureHandler;
 import com.zs.crmserver.config.handler.MyAuthenticationSuccessHandler;
 import com.zs.crmserver.config.handler.MyLogoutSuccessHandler;
@@ -35,6 +36,9 @@ public class SecurityConfig {
 
     @Resource
     private TokenVerifyFilter tokenVerifyFilter;
+
+    @Resource
+    private ExceptionHandlerProvider exceptionHandlerProvider;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -72,7 +76,13 @@ public class SecurityConfig {
                    })
                    // 添加自定义的 Filter
                    .addFilterBefore(tokenVerifyFilter, LogoutFilter.class)
-
+                   // 异常处理器
+                   .exceptionHandling((exceptionHandling) -> {
+                       exceptionHandling
+                           .authenticationEntryPoint(exceptionHandlerProvider.getAuthenticationEntryPoint())
+                           .accessDeniedHandler(exceptionHandlerProvider.getAccessDeniedHandler());
+                   })
+                   
                    // 退出
                    .logout((logout) -> {
                        logout.logoutUrl("/api/logout") // 该地址不需要controller，由框架处理
