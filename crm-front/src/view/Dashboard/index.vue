@@ -29,6 +29,20 @@
               {{subPermission.name}}
             </el-menu-item>
           </el-sub-menu> -->
+          <el-sub-menu index="1">
+            <template #title>
+              <el-icon>
+                <component :is="`OfficeBuilding`"/>
+              </el-icon>
+              <span>市场活动</span>
+            </template>
+            <el-menu-item index="/dashboard/activity">
+              <el-icon>
+                <component :is="`Notification`"/>
+              </el-icon>
+              <span>市场活动</span>
+            </el-menu-item>
+          </el-sub-menu>
           <el-sub-menu index="7">
             <template #title>
               <el-icon>

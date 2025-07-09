@@ -72,6 +72,15 @@ public class R {
                    .build();
     }
 
+    // 下拉等仅返回list
+    public static R OK(List<?> listData) {
+        return R.builder()
+                   .ListData(listData)
+                   .code(CodeEnum.OK.getCode())
+                   .msg(CodeEnum.OK.getMsg())
+                   .build();
+    }
+
     public static R FAIL() {
         return R.builder()
                    .code(CodeEnum.FAIL.getCode())

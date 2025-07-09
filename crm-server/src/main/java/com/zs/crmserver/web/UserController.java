@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -105,5 +106,11 @@ public class UserController {
     public R batchDelUser(@RequestParam(value = "ids") Integer[] ids) {
         int batchDel = userService.batchDelUserByIds(ids);
         return batchDel >= 1 ? R.OK() : R.FAIL();
+    }
+
+    @GetMapping("/api/owers")
+    public R getOwerList() {
+        List<TUser> owerList = userService.getOwerList();
+        return R.OK(owerList);
     }
 }

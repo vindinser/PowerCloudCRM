@@ -53,6 +53,12 @@
       <result column="edit_name" jdbcType="VARCHAR" property="name" />
     </association>
   </resultMap>
+
+  <resultMap id="DropDownOptionsQueryMap" type="com.zs.crmserver.query.DropDownOptionsQuery">
+    <id column="id" jdbcType="INTEGER" property="value" />
+    <result column="name" jdbcType="VARCHAR" property="label" />
+  </resultMap>
+
   <!-- 登录用户信息 -->
   <select id="selectByLoginAct" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
@@ -96,6 +102,10 @@
     where tu.id = #{id,jdbcType=INTEGER}
   </select>
 
+  <!-- 查询所有的负责人 -->
+  <select id="selectByOwner" resultMap="DropDownOptionsQueryMap">
+    select id, name from t_user
+  </select>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 

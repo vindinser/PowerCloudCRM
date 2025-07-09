@@ -37,3 +37,10 @@ export const batchDelUser = (data) => {
     operaName: '删除用户'
   });
 };
+
+// 获取活动负责人
+export const getOwers = () => {
+  return http.get('api/owers', null, {
+    showMsg: false
+  });
+};

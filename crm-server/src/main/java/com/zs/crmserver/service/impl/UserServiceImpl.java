@@ -1,6 +1,8 @@
 package com.zs.crmserver.service.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.zs.crmserver.constants.Constants;
+import com.zs.crmserver.manager.RedisManager;
 import com.zs.crmserver.mapper.TRoleMapper;
 import com.zs.crmserver.mapper.TUserMapper;
 import com.zs.crmserver.model.TRole;
@@ -9,6 +11,7 @@ import com.zs.crmserver.query.BasePageQuery;
 import com.zs.crmserver.query.BaseQuery;
 import com.zs.crmserver.query.UserQuery;
 import com.zs.crmserver.service.UserService;
+import com.zs.crmserver.util.CacheUtils;
 import com.zs.crmserver.util.JWTUtils;
 import com.zs.crmserver.util.PageHelperUtils;
 import jakarta.annotation.Resource;
@@ -35,6 +38,9 @@ public class UserServiceImpl implements UserService {
     // 角色
     @Resource
     private TRoleMapper tRoleMapper;
+
+    @Resource
+    private RedisManager redisManager;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -124,5 +130,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public int batchDelUserByIds(Integer[] ids) {
         return tUserMapper.deleteByIds(ids);
+    }
+
+    @Override
+    public List<TUser> getOwerList() {
+        return CacheUtils.getCacheData(() -> {
+            // redis 查询
+            return (List<TUser>) redisManager.getValue(Constants.REDIS_OWNER_KEY);
+        }, () -> {
+            // redis 查询不到,从数据库查询
+            return tUserMapper.selectByOwner();
+        }, (t) -> {
+            // 将数据存入redis
+            redisManager.setValue(Constants.REDIS_OWNER_KEY, t);
+        });
     }
 }

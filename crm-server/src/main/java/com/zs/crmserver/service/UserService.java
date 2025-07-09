@@ -6,6 +6,8 @@ import com.zs.crmserver.query.BasePageQuery;
 import com.zs.crmserver.query.UserQuery;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.List;
+
 public interface UserService extends UserDetailsService {
     PageInfo<TUser> getUserByPage(BasePageQuery query, String keyword);
 
@@ -18,4 +20,6 @@ public interface UserService extends UserDetailsService {
     int delUserById(Integer id);
 
     int batchDelUserByIds(Integer[] ids);
+
+    List<TUser> getOwerList();
 }

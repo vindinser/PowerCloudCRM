@@ -14,16 +14,72 @@
     <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
     <result column="edit_by" jdbcType="INTEGER" property="editBy" />
   </resultMap>
+
+  <resultMap id="ActivityResultMap" type="com.zs.crmserver.model.TActivity">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="owner_id" jdbcType="INTEGER" property="ownerId" />
+    <result column="owner_name" jdbcType="INTEGER" property="ownerName" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="cost" jdbcType="DECIMAL" property="cost" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="INTEGER" property="createBy" />
+    <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
+    <result column="edit_by" jdbcType="INTEGER" property="editBy" />
+  </resultMap>
+
   <sql id="Base_Column_List">
     id, owner_id, `name`, start_time, end_time, cost, description, create_time, create_by, 
     edit_time, edit_by
   </sql>
+
+  <!-- 市场活动列表查询 -->
+  <select id="selectActivitiesByPage" resultMap="ActivityResultMap">
+    select
+      ta.*,
+      tu.name owner_name
+    from t_activity ta
+        LEFT JOIN t_user tu ON ta.owner_id = tu.id
+    <where>
+      <if test="query.keyword != null and query.keyword != ''">
+        AND (
+          ta.name LIKE CONCAT('%', #{query.keyword}, '%')
+          OR cost LIKE CONCAT('%', #{query.keyword}, '%')
+          OR description LIKE CONCAT('%', #{query.keyword}, '%')
+        )
+      </if>
+      <if test="query.startTime  != null">
+        and ta.start_time >= #{query.startTime}
+      </if>
+      <if test="query.endTime  != null">
+        <![CDATA[  and ta.end_time <= #{query.endTime}  ]]>
+      </if>
+      <if test="ownerIds != null and ownerIds.size() > 0">
+        AND ta.owner_id IN
+        <foreach item="ownerId" collection="ownerIds" open="(" separator="," close=")">
+          #{ownerId}
+        </foreach>
+      </if>
+      ${ query.filterSQL }
+    </where>
+    <!-- 安全排序处理 -->
+    ORDER BY ${@com.zs.crmserver.util.SqlUtils@safeSort(
+        pageQuery.sortField,
+        pageQuery.sortOrder,
+        "create_time",
+        "start_time", "end_time", "create_time", "cost", "name"
+    )}
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_activity
     where id = #{id,jdbcType=INTEGER}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_activity
     where id = #{id,jdbcType=INTEGER}

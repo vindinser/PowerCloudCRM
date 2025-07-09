@@ -23,6 +23,10 @@ let router = createRouter({
           // 子路由路径不能以 / 开头
           path: 'user',
           component : () => import('@/view/User')
+        }, {
+          // 市场活动
+          path: 'activity',
+          component : () => import('@/view/Activities')
         }
       ]
     }

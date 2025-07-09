@@ -22,6 +22,11 @@ public class TActivity implements Serializable {
     private Integer ownerId;
 
     /**
+     * 活动所属人姓名
+     */
+    private String ownerName;
+
+    /**
      * 活动名称
      */
     private String name;

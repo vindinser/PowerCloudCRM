@@ -33,4 +33,6 @@ public interface TUserMapper {
     TUser selectDetailById(Integer id);
 
     int deleteByIds(Integer[] ids);
+
+    List<TUser> selectByOwner();
 }
