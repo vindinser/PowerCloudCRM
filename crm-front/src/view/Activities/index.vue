@@ -70,7 +70,13 @@
       </template>
     </component>
     <template #list-detail>
-      <component :is='componentMap[list.currentComponent.value]' :row="list.currentRow.value" @closed="list.detailClose" />
+      <component
+        :is='componentMap[list.currentComponent.value]'
+        :row="list.currentRow.value"
+        :ownerList="ownerList"
+        :shortcuts="list.shortcuts"
+        @closed="list.detailClose"
+      />
     </template>
   </component>
 </template>
@@ -79,6 +85,9 @@
   import { getOwers } from '@/api/user.js';
   import { Search, Delete, Plus } from '@element-plus/icons-vue';
   import { useList } from '@/composables/useList.js';
+  import ActivitiesForm from './form.vue';
+  import ActivitiesDetail from './detail.vue';
+  import { delActivity, batchDelActivities } from '@/api/activities.js';
 
   const formSearchRef = ref(null);
   const formSearch = reactive({
@@ -113,17 +122,17 @@
     if(isBatch) {
       const ids = batchList.map(({ id }) => id);
 
-      return batchDelUser({ ids });
+      return batchDelActivities({ ids });
     }
-    return delUser(row.id);
+    return delActivity(row.id);
 
   };
 
   // 创建组件映射对象
   const componentMap = {
-    // Detail: markRaw(UserDetail),
-    // AddForm: markRaw(UserForm),
-    // EditForm: markRaw(UserForm)
+    Detail: markRaw(ActivitiesDetail),
+    AddForm: markRaw(ActivitiesForm),
+    EditForm: markRaw(ActivitiesForm)
   };
 
   const list = useList({

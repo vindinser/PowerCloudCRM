@@ -26,8 +26,10 @@
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_by" jdbcType="INTEGER" property="createBy" />
+    <result column="create_name" jdbcType="INTEGER" property="createName" />
     <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
     <result column="edit_by" jdbcType="INTEGER" property="editBy" />
+    <result column="edit_name" jdbcType="INTEGER" property="editName" />
   </resultMap>
 
   <sql id="Base_Column_List">
@@ -74,16 +76,40 @@
   </select>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from t_activity
     where id = #{id,jdbcType=INTEGER}
   </select>
 
+  <!-- 获取活动详情 -->
+  <select id="selectDetailByPrimaryKey" parameterType="java.lang.Integer" resultMap="ActivityResultMap">
+    select
+      ta.*,
+      tuo.name owner_name,
+      tuc.name create_name,
+      tue.name edit_name
+    from t_activity ta
+       left join t_user tuo on ta.owner_id = tuo.id
+       left join t_user tuc on ta.create_by = tuc.id
+       left join t_user tue on ta.edit_by = tue.id
+    where ta.id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!-- 删除单个活动 -->
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_activity
     where id = #{id,jdbcType=INTEGER}
   </delete>
+  <!-- 批量删除活动 -->
+  <delete id="deleteActivities" parameterType="java.util.List">
+    delete from t_activity
+    where id in
+    <foreach collection="ids" item="id" open="(" close=")" separator=",">
+      #{id,jdbcType=INTEGER}
+    </foreach>
+  </delete>
+
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.zs.crmserver.model.TActivity" useGeneratedKeys="true">
     insert into t_activity (owner_id, `name`, start_time, 
       end_time, cost, description, 
@@ -94,6 +120,7 @@
       #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=INTEGER}, #{editTime,jdbcType=TIMESTAMP}, 
       #{editBy,jdbcType=INTEGER})
   </insert>
+  <!-- 录入市场活动 -->
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.zs.crmserver.model.TActivity" useGeneratedKeys="true">
     insert into t_activity
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -161,6 +188,8 @@
       </if>
     </trim>
   </insert>
+
+  <!-- 修改活动信息 -->
   <update id="updateByPrimaryKeySelective" parameterType="com.zs.crmserver.model.TActivity">
     update t_activity
     <set>

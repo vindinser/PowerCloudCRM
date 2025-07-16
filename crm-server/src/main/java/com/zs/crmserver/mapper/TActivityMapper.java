@@ -25,4 +25,8 @@ public interface TActivityMapper {
 
     @DataScope(tableAlias = "ta", tableField = "owner_id")
     List<TActivity> selectActivitiesByPage(BaseQuery query, BasePageQuery pageQuery, List<Long> ownerIds);
+
+    TActivity selectDetailByPrimaryKey(Integer id);
+
+    int deleteActivities(Integer[] ids);
 }

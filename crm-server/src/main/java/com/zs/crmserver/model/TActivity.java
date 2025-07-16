@@ -60,6 +60,7 @@ public class TActivity implements Serializable {
      * 活动创建人
      */
     private Integer createBy;
+    private String createName;
 
     /**
      * 活动编辑时间
@@ -70,6 +71,7 @@ public class TActivity implements Serializable {
      * 活动编辑人
      */
     private Integer editBy;
+    private String editName;
 
     private static final long serialVersionUID = 1L;
 }
