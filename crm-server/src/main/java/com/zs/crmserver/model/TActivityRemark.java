@@ -34,6 +34,7 @@ public class TActivityRemark implements Serializable {
      * 备注创建人
      */
     private Integer createBy;
+    private String createName;
 
     /**
      * 备注编辑时间
@@ -44,6 +45,7 @@ public class TActivityRemark implements Serializable {
      * 备注编辑人
      */
     private Integer editBy;
+    private String editName;
 
     /**
      * 删除状态（0正常，1删除）
