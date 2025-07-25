@@ -1,16 +1,14 @@
-package com.zs.crmserver.model;
+package com.zs.crmserver.query;
 
-import java.io.Serializable;
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.math.BigDecimal;
 import java.util.Date;
-import lombok.Data;
 
-/**
- * 线索表
- * t_clue
- */
 @Data
-public class TClue implements Serializable {
+public class ClueQuery extends BaseQuery {
+
     /**
      * 主键，自动增长，线索ID
      */
@@ -20,13 +18,11 @@ public class TClue implements Serializable {
      * 线索所属人ID
      */
     private Integer ownerId;
-    private String ownerName;
 
     /**
      * 活动ID
      */
     private Integer activityId;
-    private String activityName;
 
     /**
      * 姓名
@@ -37,7 +33,6 @@ public class TClue implements Serializable {
      * 称呼
      */
     private Integer appellation;
-    private String appellationName;
 
     /**
      * 手机号
@@ -83,31 +78,26 @@ public class TClue implements Serializable {
      * 是否需要贷款（0不需要，1需要）
      */
     private Integer needLoan;
-    private String needLoanName;
 
     /**
      * 意向状态
      */
     private Integer intentionState;
-    private String intentionStateName;
 
     /**
      * 意向产品
      */
     private Integer intentionProduct;
-    private String intentionProductName;
 
     /**
      * 线索状态
      */
     private Integer state;
-    private String stateName;
 
     /**
      * 线索来源
      */
     private Integer source;
-    private String sourceName;
 
     /**
      * 线索描述
@@ -116,30 +106,9 @@ public class TClue implements Serializable {
 
     /**
      * 下次联系时间
+     *
+     * 前端提交过来了一个string的日期，后端使用Date接收，那么需要加个注解转换一下
      */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date nextContactTime;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 创建人
-     */
-    private Integer createBy;
-    private String createName;
-
-    /**
-     * 编辑时间
-     */
-    private Date editTime;
-
-    /**
-     * 编辑人
-     */
-    private Integer editBy;
-    private String editName;
-
-    private static final long serialVersionUID = 1L;
 }

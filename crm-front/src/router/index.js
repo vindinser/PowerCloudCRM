@@ -27,6 +27,10 @@ let router = createRouter({
           // 市场活动
           path: 'activity',
           component : () => import('@/view/Activities')
+        }, {
+          // 线索管理
+          path: 'clue',
+          component : () => import('@/view/Clue')
         }
       ]
     }

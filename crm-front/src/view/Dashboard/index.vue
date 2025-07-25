@@ -43,6 +43,20 @@
               <span>市场活动</span>
             </el-menu-item>
           </el-sub-menu>
+          <el-sub-menu index="2">
+            <template #title>
+              <el-icon>
+                <component :is="`Operation`"/>
+              </el-icon>
+              <span>线索管理</span>
+            </template>
+            <el-menu-item index="/dashboard/clue">
+              <el-icon>
+                <component :is="`Film`"/>
+              </el-icon>
+              <span>线索管理</span>
+            </el-menu-item>
+          </el-sub-menu>
           <el-sub-menu index="7">
             <template #title>
               <el-icon>
