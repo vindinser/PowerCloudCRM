@@ -1,6 +1,8 @@
 package com.zs.crmserver.model;
 
 import java.io.Serializable;
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -28,6 +30,8 @@ public class TDicType implements Serializable {
      * 备注
      */
     private String remark;
+
+    private List<TDicValue> dicValueList;
 
     private static final long serialVersionUID = 1L;
 }

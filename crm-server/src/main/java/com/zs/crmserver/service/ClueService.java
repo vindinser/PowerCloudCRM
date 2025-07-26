@@ -5,7 +5,9 @@ import com.zs.crmserver.model.TClue;
 import com.zs.crmserver.query.BasePageQuery;
 import com.zs.crmserver.query.BaseQuery;
 import com.zs.crmserver.query.ClueQuery;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.util.List;
 
 public interface ClueService {
@@ -22,4 +24,6 @@ public interface ClueService {
     Integer delClueById(Integer id);
 
     Integer batchDelClues(Integer[] ids);
+
+    void importClue(InputStream inputStream, String token);
 }

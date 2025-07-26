@@ -12,9 +12,15 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @MapperScan(basePackages = { "com.zs.crmserver.mapper" })
 @SpringBootApplication
 public class CrmServerApplication implements CommandLineRunner {
+
+    // 缓存dict
+    public static final Map<String, Object> cacheMap = new HashMap<>();
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;

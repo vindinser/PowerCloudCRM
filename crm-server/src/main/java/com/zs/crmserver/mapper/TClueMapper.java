@@ -28,4 +28,6 @@ public interface TClueMapper {
     TClue selectDetailById(String id);
 
     Integer deleteCluesByPrimaryKey(Integer[] ids);
+
+    void saveClue(List<TClue> tClueList);
 }

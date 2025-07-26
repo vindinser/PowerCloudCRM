@@ -56,6 +56,9 @@
       @button-click="(({ row }) => list.openDetail('Detail', { row }))"
     >
       <template #head-right>
+        <!-- 手续导入 -->
+        <input ref="ImportExcelInput" type="file" name="Excel" accept=".xls, .xlsx" style="display: none" @change="getExcelData($event)" >
+        <el-button @click="importExcel">导入线索</el-button>
         <el-button type="primary" :icon="Plus" @click="list.openDetail('AddForm', {})">录入线索</el-button>
         <el-button type="danger" @click="list.openDetail('batch', {}, '删除')">批量删除</el-button>
       </template>
@@ -87,8 +90,9 @@
   import { useList } from '@/composables/useList.js';
   import ClueForm from './form.vue';
   import ClueDetail from './detail.vue';
-  import { delClue, batchDelClues } from '@/api/clue.js';
+  import { delClue, batchDelClues, importClues } from '@/api/clue.js';
 
+  const { proxy } = getCurrentInstance();
   const formSearchRef = ref(null);
   const formSearch = reactive({
     keyword: '',
@@ -147,6 +151,28 @@
     postRedOperaFn,
     column
   });
+
+
+  const ImportExcelInput = ref(null);
+  const importExcel = () => {
+    ImportExcelInput.value.value = null;
+    ImportExcelInput.value.click();
+  };
+
+  const getExcelData = async (data) => {
+    const files = data.target?.files;
+
+    if(!files) {return proxy.msg('请选择正确的Excel文件')}
+    let formData = new FormData();
+
+    formData.append('file', files?.[0]);
+    console.log('🚀 ~ getExcelData ~ data:', formData, files?.[0]);
+    const res = await importClues(formData);
+
+    if(res.code === 200) {
+      list.onSearch();
+    }
+  };
 
   const ownerList = ref([]);
   // 获取负责人

@@ -1,6 +1,8 @@
 package com.zs.crmserver.service.impl;
 
+import com.alibaba.excel.EasyExcel;
 import com.github.pagehelper.PageInfo;
+import com.zs.crmserver.config.listener.UploadDataListener;
 import com.zs.crmserver.mapper.TClueMapper;
 import com.zs.crmserver.model.TClue;
 import com.zs.crmserver.query.BasePageQuery;
@@ -12,7 +14,9 @@ import com.zs.crmserver.util.PageHelperUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
@@ -69,5 +73,12 @@ public class ClueServiceImpl implements ClueService {
     @Override
     public Integer batchDelClues(Integer[] ids) {
         return tClueMapper.deleteCluesByPrimaryKey(ids);
+    }
+
+    @Override
+    public void importClue(InputStream inputStream, String token) {
+        EasyExcel.read(inputStream, TClue.class, new UploadDataListener(tClueMapper, token))
+            .sheet()
+            .doRead();
     }
 }

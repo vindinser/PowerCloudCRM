@@ -11,7 +11,9 @@ import com.zs.crmserver.service.ClueService;
 import com.zs.crmserver.util.PageResponseUtils;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -77,5 +79,11 @@ public class ClueController {
     public R batchDelClues(@RequestParam(value = "ids") Integer[] ids) {
         Integer batchDel = clueService.batchDelClues(ids);
         return batchDel >= 1 ?  R.OK() : R.FAIL();
+    }
+
+    @PostMapping("api/clues/importExcel")
+    public R importClue(MultipartFile file, @RequestHeader(value = Constants.TOKEN_NAME)  String token) throws IOException {
+        clueService.importClue(file.getInputStream(), token);
+        return R.OK();
     }
 }

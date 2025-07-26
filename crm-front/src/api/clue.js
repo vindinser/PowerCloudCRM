@@ -51,3 +51,9 @@ export const batchDelClues = (data) => {
     operaName: '删除活动'
   });
 };
+
+export const importClues = (data) => {
+  return http.post('api/clues/importExcel', data, {
+    operaName: '导入线索'
+  });
+};
