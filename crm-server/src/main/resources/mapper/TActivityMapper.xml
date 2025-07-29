@@ -37,6 +37,13 @@
     edit_time, edit_by
   </sql>
 
+  <select id="selectOngoingActivity" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_activity
+    where  <![CDATA[  start_time <= now() and end_time >= now() ]]>
+  </select>
+
   <!-- 市场活动列表查询 -->
   <select id="selectActivitiesByPage" resultMap="ActivityResultMap">
     select

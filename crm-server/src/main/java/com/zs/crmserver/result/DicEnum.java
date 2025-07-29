@@ -21,6 +21,8 @@ public enum DicEnum {
 
     STATE("clueState"),
 
+    ACTIVITY("activity")
+
     ;
 
     @Setter

@@ -177,19 +177,32 @@
   };
 
   const dictCondition = reactive({});
-  // 获取搜索条件
 
+  // 获取搜索条件
   ((arr) => {
     dictCondition.ownerId = ownerList;
     for(let type of arr) {
+      let key = type;
+
+      if(type === 'product') {
+        key = 'intentionProduct';
+      } else if(type === 'clueState') {
+        key = 'state';
+      } else if(type === 'activity') {
+        key = 'activityId';
+      }
       loadDicValue(type).then(res => {
+
         if(res.code === 200) {
-          dictCondition[type] = res.data;
+          dictCondition[key] = res.ListData.map(item => ({
+            value: item.id,
+            label: item.typeValue || item.name
+          }));
         } else {
-          dictCondition[type] = [];
+          dictCondition[key] = [];
         }
       }).catch(() => {
-        dictCondition[type] = [];
+        dictCondition[key] = [];
       });
     }
   })(['appellation', 'needLoan', 'intentionState', 'clueState', 'source', 'activity', 'product']);

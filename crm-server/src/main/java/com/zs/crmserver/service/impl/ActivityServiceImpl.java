@@ -82,4 +82,9 @@ public class ActivityServiceImpl implements ActivityService {
         // 删除主体活动
         return tActivityMapper.deleteActivities(ids);
     }
+
+    @Override
+    public List<TActivity> getOngoingActivity() {
+        return tActivityMapper.selectOngoingActivity();
+    }
 }

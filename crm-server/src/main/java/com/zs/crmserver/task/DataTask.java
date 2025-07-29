@@ -1,10 +1,12 @@
 package com.zs.crmserver.task;
 
 import com.zs.crmserver.CrmServerApplication;
+import com.zs.crmserver.model.TActivity;
 import com.zs.crmserver.model.TDicType;
 import com.zs.crmserver.model.TDicValue;
 import com.zs.crmserver.model.TProduct;
 import com.zs.crmserver.result.DicEnum;
+import com.zs.crmserver.service.ActivityService;
 import com.zs.crmserver.service.DicTypeService;
 import com.zs.crmserver.service.ProductService;
 import jakarta.annotation.Resource;
@@ -29,6 +31,9 @@ public class DataTask {
     @Resource
     private ProductService productService;
 
+    @Resource
+    private ActivityService activityService;
+
     @Scheduled(fixedDelayString = "${project.task.delay}", zone = "Asia/Shanghai", timeUnit = TimeUnit.MILLISECONDS, initialDelay  = 1000)
     public void task() {
         //定时任务要执行的业务逻辑代码
@@ -44,5 +49,9 @@ public class DataTask {
         // 查询所有在售产品
         List<TProduct> tProductList = productService.getAllOnSaleProduct();
         CrmServerApplication.cacheMap.put(DicEnum.PRODUCT.getCode(), tProductList);
+
+        //查询所有正在进行的市场活动
+        List<TActivity> tActivityList = activityService.getOngoingActivity();
+        CrmServerApplication.cacheMap.put(DicEnum.ACTIVITY.getCode(), tActivityList);
     }
 }

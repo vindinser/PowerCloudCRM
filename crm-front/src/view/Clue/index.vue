@@ -166,7 +166,6 @@
     let formData = new FormData();
 
     formData.append('file', files?.[0]);
-    console.log('🚀 ~ getExcelData ~ data:', formData, files?.[0]);
     const res = await importClues(formData);
 
     if(res.code === 200) {

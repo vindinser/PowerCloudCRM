@@ -38,12 +38,6 @@ public class ClueController {
         return check ? R.OK() : R.FAIL();
     }
 
-    // @GetMapping("/api/dicvalue/{type}")
-    // public R dicvalue(@PathVariable(value = "type") String type) {
-    //     Boolean check = clueService.checkPhone(type);
-    //     return check ? R.OK() : R.FAIL();
-    // }
-
     @PostMapping("/api/clues")
     public R addClue(@RequestBody ClueQuery clueQuery, @RequestHeader(value = Constants.TOKEN_NAME)  String token) {
         Boolean b = clueService.checkPhone(clueQuery.getPhone());
