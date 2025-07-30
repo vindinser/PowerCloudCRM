@@ -48,12 +48,44 @@ export const delClue = (id) => {
 
 export const batchDelClues = (data) => {
   return http.delete('api/clues', data, {
-    operaName: '删除活动'
+    operaName: '删除线索'
   });
 };
 
 export const importClues = (data) => {
   return http.post('api/clues/importExcel', data, {
     operaName: '导入线索'
+  });
+};
+
+export const getClueTrackRecords = (data) => {
+  return http.get('api/clues/record', data, {
+    operaName: '获取线索跟踪记录'
+  });
+};
+
+export const addClueTrackRecord = (data) => {
+  return http.post('api/clues/record', data, {
+    operaName: '新增线索跟踪记录'
+  });
+};
+
+export const updateClueTrackRecord = (data) => {
+  return http.put('api/clues/record', data, {
+    operaName: '修改线索跟踪记录'
+  });
+};
+
+// 删除线索跟踪记录
+export const delClueTrackRecord = (id) => {
+  return http.delete(`api/clues/record/${ id }`, null, {
+    operaName: '删除线索跟踪记录'
+  });
+};
+
+// 批量删除线索跟踪记录
+export const batchDelClueTrackRecords = (data) => {
+  return http.delete('api/clues/record', data, {
+    operaName: '删除线索跟踪记录'
   });
 };

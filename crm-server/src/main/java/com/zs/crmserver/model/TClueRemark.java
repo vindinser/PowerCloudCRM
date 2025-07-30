@@ -24,6 +24,7 @@ public class TClueRemark implements Serializable {
      * 跟踪方式
      */
     private Integer noteWay;
+    private String noteWayName;
 
     /**
      * 跟踪内容
@@ -39,6 +40,7 @@ public class TClueRemark implements Serializable {
      * 跟踪人
      */
     private Integer createBy;
+    private String createName;
 
     /**
      * 编辑时间
@@ -49,6 +51,7 @@ public class TClueRemark implements Serializable {
      * 编辑人
      */
     private Integer editBy;
+    private String editName;
 
     /**
      * 删除状态（0正常，1删除）

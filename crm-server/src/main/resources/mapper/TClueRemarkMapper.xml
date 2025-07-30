@@ -12,10 +12,52 @@
     <result column="edit_by" jdbcType="INTEGER" property="editBy" />
     <result column="deleted" jdbcType="INTEGER" property="deleted" />
   </resultMap>
+
+  <resultMap id="ClueRRecordResultMap" type="com.zs.crmserver.model.TClueRemark">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="clue_id" jdbcType="INTEGER" property="clueId" />
+    <result column="note_way" jdbcType="INTEGER" property="noteWay" />
+    <result column="note_content" jdbcType="VARCHAR" property="noteContent" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="INTEGER" property="createBy" />
+    <result column="create_name" jdbcType="INTEGER" property="createName" />
+    <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
+    <result column="edit_by" jdbcType="INTEGER" property="editBy" />
+    <result column="edit_name" jdbcType="INTEGER" property="editName" />
+    <result column="deleted" jdbcType="INTEGER" property="deleted" />
+  </resultMap>
+
   <sql id="Base_Column_List">
     id, clue_id, note_way, note_content, create_time, create_by, edit_time, edit_by, 
     deleted
   </sql>
+
+  <!-- 查询线索跟踪记录 -->
+  <select id="selectClueRecordByPage" parameterType="java.lang.Integer" resultMap="ClueRRecordResultMap">
+    select
+      tcr.*,
+      tuc.name create_name,
+      tue.name edit_name
+    from t_clue_remark tcr
+      left join t_user tuc on tcr.create_by = tuc.id
+      left join t_user tue on tcr.edit_by = tue.id
+    <where>
+      tcr.clue_id = #{clueTrackRecordQuery.clueId, jdbcType=INTEGER} and (tcr.deleted is null or tcr.deleted = 0)
+      <if test="clueTrackRecordQuery.keyword != null and clueTrackRecordQuery.keyword != ''">
+        AND (
+          tcr.note_content LIKE CONCAT('%', #{clueTrackRecordQuery.keyword}, '%')
+        )
+      </if>
+      ${ clueTrackRecordQuery.filterSQL }
+    </where>
+    ORDER BY ${@com.zs.crmserver.util.SqlUtils@safeSort(
+        basePageQuery.sortField,
+        basePageQuery.sortOrder,
+        "create_time",
+        "create_time", "edit_time"
+    )}
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -26,6 +68,17 @@
     delete from t_clue_remark
     where id = #{id,jdbcType=INTEGER}
   </delete>
+
+  <!-- 逻辑批量删除 -->
+  <update id="batchUpdateDeletedStatus">
+    UPDATE t_clue_remark
+    SET deleted = #{deleted}
+    WHERE id IN
+    <foreach collection="ids" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </update>
+
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.zs.crmserver.model.TClueRemark" useGeneratedKeys="true">
     insert into t_clue_remark (clue_id, note_way, note_content, 
       create_time, create_by, edit_time, 
@@ -34,6 +87,8 @@
       #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=INTEGER}, #{editTime,jdbcType=TIMESTAMP}, 
       #{editBy,jdbcType=INTEGER}, #{deleted,jdbcType=INTEGER})
   </insert>
+
+  <!-- 新增跟踪记录 -->
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.zs.crmserver.model.TClueRemark" useGeneratedKeys="true">
     insert into t_clue_remark
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -89,6 +144,8 @@
       </if>
     </trim>
   </insert>
+
+  <!-- 编辑跟踪记录 -->
   <update id="updateByPrimaryKeySelective" parameterType="com.zs.crmserver.model.TClueRemark">
     update t_clue_remark
     <set>
@@ -131,4 +188,18 @@
       deleted = #{deleted,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 删除活动时删除相关备注 -->
+  <delete id="deleteByClueId">
+    DELETE FROM t_clue_remark
+    WHERE clue_id = #{clueId}
+  </delete>
+  <!-- 批量删除活动时批量删除相关备注 -->
+  <delete id="batchDeleteByClueIds">
+    DELETE FROM t_clue_remark
+    WHERE clue_id IN
+    <foreach collection="ids" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </delete>
 </mapper>

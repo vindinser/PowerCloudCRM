@@ -4,6 +4,7 @@ import com.alibaba.excel.EasyExcel;
 import com.github.pagehelper.PageInfo;
 import com.zs.crmserver.config.listener.UploadDataListener;
 import com.zs.crmserver.mapper.TClueMapper;
+import com.zs.crmserver.mapper.TClueRemarkMapper;
 import com.zs.crmserver.model.TClue;
 import com.zs.crmserver.query.BasePageQuery;
 import com.zs.crmserver.query.BaseQuery;
@@ -25,6 +26,9 @@ public class ClueServiceImpl implements ClueService {
 
     @Resource
     private TClueMapper tClueMapper;
+
+    @Resource
+    private TClueRemarkMapper tClueRemarkMapper;
 
     @Override
     public PageInfo<TClue> getClueByPage(BaseQuery query, BasePageQuery pageQuery, List<Long> ownerIds) {
@@ -67,11 +71,14 @@ public class ClueServiceImpl implements ClueService {
 
     @Override
     public Integer delClueById(Integer id) {
+        // 先删除跟踪记录
+        tClueRemarkMapper.deleteByClueId(id);
         return tClueMapper.deleteByPrimaryKey(id);
     }
 
     @Override
     public Integer batchDelClues(Integer[] ids) {
+        tClueRemarkMapper.batchDeleteByClueIds(ids);
         return tClueMapper.deleteCluesByPrimaryKey(ids);
     }
 

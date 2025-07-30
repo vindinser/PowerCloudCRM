@@ -6,7 +6,8 @@
         <span>{{ echoInfo[item.value] }}</span>
       </el-descriptions-item>
     </el-descriptions>
-
+    <!-- 线索跟踪记录 -->
+    <ClueTrackRecord :row="row" />
     <template #foot>
       <el-button @click="emit('closed')">关闭</el-button>
     </template>
@@ -16,6 +17,7 @@
 <script setup name="ClueDetail">
   import ZSDetail from '@/components/ZSDetail';
   import { getClueDetail } from '@/api/clue.js';
+  import ClueTrackRecord from './TrackRecord';
 
   const emit = defineEmits(['closed']);
   const { row } = defineProps({
