@@ -89,3 +89,9 @@ export const batchDelClueTrackRecords = (data) => {
     operaName: '删除线索跟踪记录'
   });
 };
+
+export const transferCustomer = (data) => {
+  return http.post('api/clue/customer', data, {
+    operaName: '线索转客户'
+  });
+};

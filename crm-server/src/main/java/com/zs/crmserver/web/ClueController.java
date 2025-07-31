@@ -6,6 +6,7 @@ import com.zs.crmserver.model.TClue;
 import com.zs.crmserver.query.BasePageQuery;
 import com.zs.crmserver.query.BaseQuery;
 import com.zs.crmserver.query.ClueQuery;
+import com.zs.crmserver.query.CustomerQuery;
 import com.zs.crmserver.result.R;
 import com.zs.crmserver.service.ClueService;
 import com.zs.crmserver.util.PageResponseUtils;
@@ -79,5 +80,15 @@ public class ClueController {
     public R importClue(MultipartFile file, @RequestHeader(value = Constants.TOKEN_NAME)  String token) throws IOException {
         clueService.importClue(file.getInputStream(), token);
         return R.OK();
+    }
+
+    @PostMapping("/api/clue/customer")
+    public R transferCustomer(
+        @RequestBody CustomerQuery customerQuery,
+        @RequestHeader(value = Constants.TOKEN_NAME)  String token
+    ) {
+        customerQuery.setToken(token);
+        Boolean transfer = clueService.transferCustomer(customerQuery);
+        return transfer ? R.OK() : R.FAIL();
     }
 }

@@ -3,18 +3,21 @@ package com.zs.crmserver.service.impl;
 import com.alibaba.excel.EasyExcel;
 import com.github.pagehelper.PageInfo;
 import com.zs.crmserver.config.listener.UploadDataListener;
+import com.zs.crmserver.manager.CustomerManager;
 import com.zs.crmserver.mapper.TClueMapper;
 import com.zs.crmserver.mapper.TClueRemarkMapper;
 import com.zs.crmserver.model.TClue;
 import com.zs.crmserver.query.BasePageQuery;
 import com.zs.crmserver.query.BaseQuery;
 import com.zs.crmserver.query.ClueQuery;
+import com.zs.crmserver.query.CustomerQuery;
 import com.zs.crmserver.service.ClueService;
 import com.zs.crmserver.util.JWTUtils;
 import com.zs.crmserver.util.PageHelperUtils;
 import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
@@ -30,6 +33,9 @@ public class ClueServiceImpl implements ClueService {
     @Resource
     private TClueRemarkMapper tClueRemarkMapper;
 
+    @Resource
+    private CustomerManager customerManager;
+
     @Override
     public PageInfo<TClue> getClueByPage(BaseQuery query, BasePageQuery pageQuery, List<Long> ownerIds) {
         return PageHelperUtils.pageQuery(
@@ -44,6 +50,7 @@ public class ClueServiceImpl implements ClueService {
         return count <= 0;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int saveClue(ClueQuery clueQuery) {
         TClue tClue = new TClue();
@@ -54,6 +61,7 @@ public class ClueServiceImpl implements ClueService {
         return tClueMapper.insertSelective(tClue);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public int updateClue(ClueQuery clueQuery) {
         TClue tClue = new TClue();
@@ -69,6 +77,7 @@ public class ClueServiceImpl implements ClueService {
         return tClueMapper.selectDetailById(id);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Integer delClueById(Integer id) {
         // 先删除跟踪记录
@@ -87,5 +96,10 @@ public class ClueServiceImpl implements ClueService {
         EasyExcel.read(inputStream, TClue.class, new UploadDataListener(tClueMapper, token))
             .sheet()
             .doRead();
+    }
+
+    @Override
+    public Boolean transferCustomer(CustomerQuery customerQuery) {
+        return customerManager.transferCustomer(customerQuery);
     }
 }

@@ -63,11 +63,17 @@
         <el-button type="danger" @click="list.openDetail('batch', {}, '删除')">批量删除</el-button>
       </template>
       <template #table-oper>
-        <el-table-column label="操作" min-width="150" fixed="right">
+        <el-table-column label="操作" min-width="220" fixed="right">
           <template #default="scope">
             <el-button type="primary" link @click="list.openDetail('Detail', scope)">详情</el-button>
-            <el-button type="primary" link @click="list.openDetail('EditForm', scope)">编辑</el-button>
+            <el-button type="warning" link @click="list.openDetail('EditForm', scope)">编辑</el-button>
             <el-button type="danger" link @click="list.openDetail('del', scope, '删除')">删除</el-button>
+            <el-button
+              type="success"
+              :disabled="scope.row.state === -1"
+              link
+              @click="list.openDetail('TrackRecord', scope, '转客户')"
+            >转客户</el-button>
           </template>
         </el-table-column>
       </template>
@@ -76,6 +82,7 @@
       <component
         :is='componentMap[list.currentComponent.value]'
         :row="list.currentRow.value"
+        :show="list.currentComponent.value"
         :ownerList="ownerList"
         :shortcuts="list.shortcuts"
         @closed="list.detailClose"
@@ -91,6 +98,7 @@
   import ClueForm from './form.vue';
   import ClueDetail from './detail.vue';
   import { delClue, batchDelClues, importClues } from '@/api/clue.js';
+  import TrackRecord from './TransferCustomer';
 
   const { proxy } = getCurrentInstance();
   const formSearchRef = ref(null);
@@ -142,7 +150,8 @@
   const componentMap = {
     Detail: markRaw(ClueDetail),
     AddForm: markRaw(ClueForm),
-    EditForm: markRaw(ClueForm)
+    EditForm: markRaw(ClueForm),
+    TrackRecord: markRaw(TrackRecord)
   };
 
   const list = useList({
