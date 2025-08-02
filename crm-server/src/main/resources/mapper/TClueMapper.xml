@@ -28,43 +28,6 @@
     <result column="edit_by" jdbcType="INTEGER" property="editBy" />
   </resultMap>
 
-  <resultMap id="ClueResultMap" type="com.zs.crmserver.model.TClue">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="owner_id" jdbcType="INTEGER" property="ownerId" />
-    <result column="owner_name" jdbcType="VARCHAR" property="ownerName" />
-    <result column="activity_id" jdbcType="INTEGER" property="activityId" />
-    <result column="activity_name" jdbcType="VARCHAR" property="activityName" />
-    <result column="full_name" jdbcType="VARCHAR" property="fullName" />
-    <result column="appellation" jdbcType="INTEGER" property="appellation" />
-    <result column="appellation_name" jdbcType="VARCHAR" property="appellationName" />
-    <result column="phone" jdbcType="VARCHAR" property="phone" />
-    <result column="weixin" jdbcType="VARCHAR" property="weixin" />
-    <result column="qq" jdbcType="VARCHAR" property="qq" />
-    <result column="email" jdbcType="VARCHAR" property="email" />
-    <result column="age" jdbcType="INTEGER" property="age" />
-    <result column="job" jdbcType="VARCHAR" property="job" />
-    <result column="year_income" jdbcType="DECIMAL" property="yearIncome" />
-    <result column="address" jdbcType="VARCHAR" property="address" />
-    <result column="need_loan" jdbcType="INTEGER" property="needLoan" />
-    <result column="need_loan_name" jdbcType="VARCHAR" property="needLoanName" />
-    <result column="intention_state" jdbcType="INTEGER" property="intentionState" />
-    <result column="intention_state_name" jdbcType="VARCHAR" property="intentionStateName" />
-    <result column="intention_product" jdbcType="INTEGER" property="intentionProduct" />
-    <result column="intention_product_name" jdbcType="VARCHAR" property="intentionProductName" />
-    <result column="state" jdbcType="INTEGER" property="state" />
-    <result column="state_name" jdbcType="VARCHAR" property="stateName" />
-    <result column="source" jdbcType="INTEGER" property="source" />
-    <result column="source_name" jdbcType="VARCHAR" property="sourceName" />
-    <result column="description" jdbcType="VARCHAR" property="description" />
-    <result column="next_contact_time" jdbcType="TIMESTAMP" property="nextContactTime" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="create_by" jdbcType="INTEGER" property="createBy" />
-    <result column="create_name" jdbcType="INTEGER" property="createName" />
-    <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
-    <result column="edit_by" jdbcType="INTEGER" property="editBy" />
-    <result column="edit_name" jdbcType="INTEGER" property="editName" />
-  </resultMap>
-
   <sql id="Base_Column_List">
     id, owner_id, activity_id, full_name, appellation, phone, weixin, qq, email, age, 
     job, year_income, address, need_loan, intention_state, intention_product, `state`, 
@@ -72,26 +35,10 @@
   </sql>
 
   <!-- 线索管理列表查询 -->
-  <select id="selectClueByPage" resultMap="ClueResultMap">
+  <select id="selectClueByPage" resultMap="BaseResultMap">
     select
-      tc.*,
-      tu.name owner_name,
-      ta.name activity_name,
-      tdva.type_value appellation_name,
-      tdvn.type_value need_loan_name,
-      tdvi.type_value intention_state_name,
-      tp.name intention_product_name,
-      tdvs.type_value state_name,
-      tdvo.type_value source_name
+    <include refid="Base_Column_List" />
     from t_clue tc
-      LEFT JOIN t_user tu ON tc.owner_id = tu.id
-      LEFT JOIN t_activity ta ON tc.activity_id = ta.id
-      LEFT JOIN t_dic_value tdva ON tc.appellation = tdva.id
-      LEFT JOIN t_dic_value tdvn ON tc.need_loan = tdvn.id
-      LEFT JOIN t_dic_value tdvi ON tc.intention_state = tdvi.id
-      LEFT JOIN t_product tp ON tc.intention_product = tp.id
-      LEFT JOIN t_dic_value tdvs ON tc.state = tdvs.id
-      LEFT JOIN t_dic_value tdvo ON tc.source = tdvo.id
     <where>
       <if test="query.keyword != null and query.keyword != ''">
         AND (
@@ -135,30 +82,10 @@
   </select>
 
   <!-- 查询线索详情 -->
-  <select id="selectDetailById" parameterType="java.lang.Integer" resultMap="ClueResultMap">
+  <select id="selectDetailById" resultMap="BaseResultMap">
     select
-      tc.*,
-      tu.name owner_name,
-      tuc.name create_name,
-      tue.name edit_name,
-      ta.name activity_name,
-      tdva.type_value appellation_name,
-      tdvn.type_value need_loan_name,
-      tdvi.type_value intention_state_name,
-      tp.name intention_product_name,
-      tdvs.type_value state_name,
-      tdvo.type_value source_name
+    <include refid="Base_Column_List" />
     FROM t_clue tc
-      LEFT JOIN t_user tu ON tc.owner_id = tu.id
-      LEFT JOIN t_user tuc ON tc.create_by = tuc.id
-      LEFT JOIN t_user tue ON tc.edit_by = tue.id
-      LEFT JOIN t_activity ta ON tc.activity_id = ta.id
-      LEFT JOIN t_dic_value tdva ON tc.appellation = tdva.id
-      LEFT JOIN t_dic_value tdvn ON tc.need_loan = tdvn.id
-      LEFT JOIN t_dic_value tdvi ON tc.intention_state = tdvi.id
-      LEFT JOIN t_product tp ON tc.intention_product = tp.id
-      LEFT JOIN t_dic_value tdvs ON tc.state = tdvs.id
-      LEFT JOIN t_dic_value tdvo ON tc.source = tdvo.id
     <where>
       tc.id = #{id, jdbcType=INTEGER}
     </where>

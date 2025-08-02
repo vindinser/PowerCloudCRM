@@ -121,9 +121,9 @@
     { show: true, prop: 'sourceName', label: '线索来源', width: '100' },
     { show: true, prop: 'nextContactTime', label: '下次联系时间', width: '200', sortable: 'custom' },
     { show: true, prop: 'createTime', label: '创建时间', width: '200', sortable: 'custom' },
-    // { show: true, prop: 'createBy', label: '创建人', width: '100' },
-    { show: true, prop: 'editTime', label: '修改时间', width: '200', sortable: 'custom' }
-    // { show: true, prop: 'editBy', label: '修改人', width: '100' }
+    { show: true, prop: 'createName', label: '创建人', width: '100' },
+    { show: true, prop: 'editTime', label: '修改时间', width: '200', sortable: 'custom' },
+    { show: true, prop: 'editName', label: '修改人', width: '100' }
   ]);
 
   const getTableDataParam = () => ({

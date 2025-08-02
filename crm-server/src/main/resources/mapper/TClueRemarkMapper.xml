@@ -13,34 +13,16 @@
     <result column="deleted" jdbcType="INTEGER" property="deleted" />
   </resultMap>
 
-  <resultMap id="ClueRRecordResultMap" type="com.zs.crmserver.model.TClueRemark">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="clue_id" jdbcType="INTEGER" property="clueId" />
-    <result column="note_way" jdbcType="INTEGER" property="noteWay" />
-    <result column="note_content" jdbcType="VARCHAR" property="noteContent" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="create_by" jdbcType="INTEGER" property="createBy" />
-    <result column="create_name" jdbcType="INTEGER" property="createName" />
-    <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
-    <result column="edit_by" jdbcType="INTEGER" property="editBy" />
-    <result column="edit_name" jdbcType="INTEGER" property="editName" />
-    <result column="deleted" jdbcType="INTEGER" property="deleted" />
-  </resultMap>
-
   <sql id="Base_Column_List">
     id, clue_id, note_way, note_content, create_time, create_by, edit_time, edit_by, 
     deleted
   </sql>
 
   <!-- 查询线索跟踪记录 -->
-  <select id="selectClueRecordByPage" parameterType="java.lang.Integer" resultMap="ClueRRecordResultMap">
+  <select id="selectClueRecordByPage" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
-      tcr.*,
-      tuc.name create_name,
-      tue.name edit_name
+      tcr.*
     from t_clue_remark tcr
-      left join t_user tuc on tcr.create_by = tuc.id
-      left join t_user tue on tcr.edit_by = tue.id
     <where>
       tcr.clue_id = #{clueTrackRecordQuery.clueId, jdbcType=INTEGER} and (tcr.deleted is null or tcr.deleted = 0)
       <if test="clueTrackRecordQuery.keyword != null and clueTrackRecordQuery.keyword != ''">

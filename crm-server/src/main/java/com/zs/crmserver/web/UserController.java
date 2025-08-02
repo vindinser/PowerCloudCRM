@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.zs.crmserver.constants.Constants;
 import com.zs.crmserver.model.TUser;
 import com.zs.crmserver.query.BasePageQuery;
+import com.zs.crmserver.query.DropDownOptionsQuery;
 import com.zs.crmserver.query.UserQuery;
 import com.zs.crmserver.result.R;
 import com.zs.crmserver.service.RedisService;
@@ -110,7 +111,7 @@ public class UserController {
 
     @GetMapping("/api/owers")
     public R getOwerList() {
-        List<TUser> owerList = userService.getOwerList();
+        List<DropDownOptionsQuery> owerList = userService.getOwerList();
         return R.OK(owerList);
     }
 }

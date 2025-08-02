@@ -3,6 +3,7 @@ package com.zs.crmserver.service;
 import com.github.pagehelper.PageInfo;
 import com.zs.crmserver.model.TUser;
 import com.zs.crmserver.query.BasePageQuery;
+import com.zs.crmserver.query.DropDownOptionsQuery;
 import com.zs.crmserver.query.UserQuery;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -21,5 +22,5 @@ public interface UserService extends UserDetailsService {
 
     int batchDelUserByIds(Integer[] ids);
 
-    List<TUser> getOwerList();
+    List<DropDownOptionsQuery> getOwerList();
 }

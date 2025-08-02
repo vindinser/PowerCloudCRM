@@ -6,6 +6,8 @@ import java.util.Date;
 
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.zs.crmserver.commons.DictConvert;
+import com.zs.crmserver.commons.UserConvert;
 import com.zs.crmserver.config.converter.*;
 import lombok.Data;
 
@@ -25,6 +27,7 @@ public class TClue implements Serializable {
      * 线索所属人ID
      */
     @ExcelProperty(value = "负责人")
+    @UserConvert(userNameField = "ownerName")
     private Integer ownerId;
     private String ownerName;
 
@@ -32,6 +35,7 @@ public class TClue implements Serializable {
      * 活动ID
      */
     @ExcelProperty(value = "所属活动")
+    @DictConvert(dicType = "appellation", targetField = "activityName", nameField = "name")
     private Integer activityId;
     private String activityName;
 
@@ -45,6 +49,7 @@ public class TClue implements Serializable {
      * 称呼
      */
     @ExcelProperty(value = "称呼", converter = AppellationConverter.class)
+    @DictConvert(dicType = "appellation", targetField = "appellationName")
     private Integer appellation;
     private String appellationName;
 
@@ -100,6 +105,7 @@ public class TClue implements Serializable {
      * 是否需要贷款（0不需要，1需要）
      */
     @ExcelProperty(value = "是否贷款", converter = NeedLoanConverter.class)
+    @DictConvert(dicType = "needLoan", targetField = "needLoanName")
     private Integer needLoan;
     private String needLoanName;
 
@@ -107,6 +113,7 @@ public class TClue implements Serializable {
      * 意向状态
      */
     @ExcelProperty(value = "意向状态", converter = IntentionStateConverter.class)
+    @DictConvert(dicType = "intentionState", targetField = "intentionStateName")
     private Integer intentionState;
     private String intentionStateName;
 
@@ -114,6 +121,7 @@ public class TClue implements Serializable {
      * 意向产品
      */
     @ExcelProperty(value = "意向产品", converter = IntentionProductConverter.class)
+    @DictConvert(dicType = "product", targetField = "intentionProductName", nameField = "name")
     private Integer intentionProduct;
     private String intentionProductName;
 
@@ -121,6 +129,7 @@ public class TClue implements Serializable {
      * 线索状态
      */
     @ExcelProperty(value = "线索状态", converter = StateConverter.class)
+    @DictConvert(dicType = "clueState", targetField = "stateName")
     private Integer state;
     private String stateName;
 
@@ -128,6 +137,7 @@ public class TClue implements Serializable {
      * 线索来源
      */
     @ExcelProperty(value = "线索来源", converter = SourceConverter.class)
+    @DictConvert(dicType = "source", targetField = "sourceName")
     private Integer source;
     private String sourceName;
 
@@ -151,6 +161,7 @@ public class TClue implements Serializable {
     /**
      * 创建人
      */
+    @UserConvert(userNameField = "createName")
     private Integer createBy;
     private String createName;
 
@@ -162,6 +173,7 @@ public class TClue implements Serializable {
     /**
      * 编辑人
      */
+    @UserConvert(userNameField = "editName")
     private Integer editBy;
     private String editName;
 

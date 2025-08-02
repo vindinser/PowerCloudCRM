@@ -2,6 +2,9 @@ package com.zs.crmserver.model;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.zs.crmserver.commons.DictConvert;
+import com.zs.crmserver.commons.UserConvert;
 import lombok.Data;
 
 /**
@@ -23,6 +26,7 @@ public class TClueRemark implements Serializable {
     /**
      * 跟踪方式
      */
+    @DictConvert(dicType = "noteWay", targetField = "noteWayName")
     private Integer noteWay;
     private String noteWayName;
 
@@ -39,6 +43,7 @@ public class TClueRemark implements Serializable {
     /**
      * 跟踪人
      */
+    @UserConvert(userNameField = "createName")
     private Integer createBy;
     private String createName;
 
@@ -50,6 +55,7 @@ public class TClueRemark implements Serializable {
     /**
      * 编辑人
      */
+    @UserConvert(userNameField = "editName")
     private Integer editBy;
     private String editName;
 

@@ -9,6 +9,7 @@ import com.zs.crmserver.model.TRole;
 import com.zs.crmserver.model.TUser;
 import com.zs.crmserver.query.BasePageQuery;
 import com.zs.crmserver.query.BaseQuery;
+import com.zs.crmserver.query.DropDownOptionsQuery;
 import com.zs.crmserver.query.UserQuery;
 import com.zs.crmserver.service.UserService;
 import com.zs.crmserver.util.CacheUtils;
@@ -133,10 +134,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<TUser> getOwerList() {
+    public List<DropDownOptionsQuery> getOwerList() {
         return CacheUtils.getCacheData(() -> {
             // redis 查询
-            return (List<TUser>) redisManager.getValue(Constants.REDIS_OWNER_KEY);
+            return (List<DropDownOptionsQuery>) redisManager.getValue(Constants.REDIS_OWNER_KEY);
         }, () -> {
             // redis 查询不到,从数据库查询
             return tUserMapper.selectByOwner();

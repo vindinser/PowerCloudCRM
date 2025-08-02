@@ -2,6 +2,7 @@ package com.zs.crmserver.service.impl;
 
 import com.alibaba.excel.EasyExcel;
 import com.github.pagehelper.PageInfo;
+import com.zs.crmserver.commons.EnableDictConversion;
 import com.zs.crmserver.config.listener.UploadDataListener;
 import com.zs.crmserver.manager.CustomerManager;
 import com.zs.crmserver.mapper.TClueMapper;
@@ -37,6 +38,7 @@ public class ClueServiceImpl implements ClueService {
     private CustomerManager customerManager;
 
     @Override
+    @EnableDictConversion(EnableDictConversion.ReturnType.PAGE)
     public PageInfo<TClue> getClueByPage(BaseQuery query, BasePageQuery pageQuery, List<Long> ownerIds) {
         return PageHelperUtils.pageQuery(
             pageQuery,
@@ -73,6 +75,7 @@ public class ClueServiceImpl implements ClueService {
     }
 
     @Override
+    @EnableDictConversion(EnableDictConversion.ReturnType.SINGLE)
     public TClue getClueById(String id) {
         return tClueMapper.selectDetailById(id);
     }

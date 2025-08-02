@@ -4,6 +4,7 @@ import com.zs.crmserver.commons.DataScope;
 import com.zs.crmserver.model.TUser;
 import com.zs.crmserver.query.BasePageQuery;
 import com.zs.crmserver.query.BaseQuery;
+import com.zs.crmserver.query.DropDownOptionsQuery;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -34,5 +35,5 @@ public interface TUserMapper {
 
     int deleteByIds(Integer[] ids);
 
-    List<TUser> selectByOwner();
+    List<DropDownOptionsQuery> selectByOwner();
 }

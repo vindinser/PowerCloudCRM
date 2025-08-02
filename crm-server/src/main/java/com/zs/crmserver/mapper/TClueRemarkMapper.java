@@ -1,5 +1,6 @@
 package com.zs.crmserver.mapper;
 
+import com.zs.crmserver.commons.DataScope;
 import com.zs.crmserver.model.TClueRemark;
 import com.zs.crmserver.query.BasePageQuery;
 import com.zs.crmserver.query.ClueTrackRecordQuery;
@@ -19,6 +20,7 @@ public interface TClueRemarkMapper {
 
     int updateByPrimaryKey(TClueRemark record);
 
+    @DataScope(tableAlias = "tcr", tableField = "create_by")
     List<TClueRemark> selectClueRecordByPage(ClueTrackRecordQuery clueTrackRecordQuery, BasePageQuery basePageQuery);
 
     int batchUpdateDeletedStatus(Integer[] ids, int deleted);
