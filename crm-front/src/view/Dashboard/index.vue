@@ -57,6 +57,20 @@
               <span>线索管理</span>
             </el-menu-item>
           </el-sub-menu>
+          <el-sub-menu index="3">
+            <template #title>
+              <el-icon>
+                <component :is="`User`"/>
+              </el-icon>
+              <span>客户管理</span>
+            </template>
+            <el-menu-item index="/dashboard/customer">
+              <el-icon>
+                <component :is="`CreditCard`"/>
+              </el-icon>
+              <span>客户管理</span>
+            </el-menu-item>
+          </el-sub-menu>
           <el-sub-menu index="7">
             <template #title>
               <el-icon>

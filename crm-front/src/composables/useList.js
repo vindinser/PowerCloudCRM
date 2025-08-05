@@ -1,6 +1,7 @@
 import apis from '@/api';
 import ZsList from '@/components/ZSList';
 import ZsTable from '@/components/ZSTable';
+import useUserStore from '@/store/modules/user';
 
 /**
  * 列表通用函数
@@ -10,6 +11,7 @@ import ZsTable from '@/components/ZSTable';
  * @param {ref} formSearchRef 表单搜索ref
  * @param {boolean} isHasTree 是否在 需要从第一页获取数据
  * @param {boolean} isMountedLoad 是否在 mounted 生命周期加载列表数据
+ * @param {function} getExportParam 获取列表导出参数方法
  * @returns
  */
 export const useList = ({
@@ -18,7 +20,8 @@ export const useList = ({
   column = [],
   formSearchRef,
   isHasTree = false,
-  isMountedLoad = true
+  isMountedLoad = true,
+  getExportParam = () => {}
 }) => {
   const { proxy } = getCurrentInstance();
 
@@ -153,14 +156,37 @@ export const useList = ({
    * @param {boolean} isRefresh 操作后是否刷新
    */
   const redOperaFn = async (row, isBatch, type, isRefresh) => {
-    const data = await postRedOperaFn(row, isBatch, type, batchList.value);
-    const success = data.code === 200 || data.success;
+    if(type === 'export') {
+      const { token } = useUserStore();
+      const { uri, key } = getExportParam();
+      let iframe = document.createElement('iframe');
 
-    if (isRefresh && success) {
-      if (isHasTree) {
-        onSearch();
-      } else {
-        getTableData();
+      iframe.style.display = 'none';
+
+      let src = `${ import.meta.env.VITE_APP_BASE_API }/${ uri }?Authorization=${ token }`;
+
+      if(batchList.value.length !== 0) {
+        const ids = (() => {
+          if(key) {
+            return batchList.value.map(item => item[key]);
+          }
+          return batchList.value;
+        })();
+
+        src += `&ids=${ ids }`;
+      }
+      iframe.src = src;
+      document.body.appendChild(iframe);
+    } else {
+      const data = await postRedOperaFn(row, isBatch, type, batchList.value);
+      const success = data.code === 200 || data.success;
+
+      if (isRefresh && success) {
+        if (isHasTree) {
+          onSearch();
+        } else {
+          getTableData();
+        }
       }
     }
   };

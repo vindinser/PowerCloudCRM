@@ -31,6 +31,10 @@ let router = createRouter({
           // 线索管理
           path: 'clue',
           component : () => import('@/view/Clue')
+        }, {
+          // 客户管理
+          path: 'customer',
+          component : () => import('@/view/Customer')
         }
       ]
     }

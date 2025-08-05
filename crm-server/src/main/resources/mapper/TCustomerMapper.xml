@@ -11,11 +11,93 @@
     <result column="create_by" jdbcType="INTEGER" property="createBy" />
     <result column="edit_time" jdbcType="TIMESTAMP" property="editTime" />
     <result column="edit_by" jdbcType="INTEGER" property="editBy" />
+
+    <result column="owner_id" jdbcType="INTEGER" property="ownerId" />
+    <result column="activity_id" jdbcType="INTEGER" property="activityId" />
+    <result column="full_name" jdbcType="VARCHAR" property="fullName" />
+    <result column="appellation" jdbcType="INTEGER" property="appellation" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="weixin" jdbcType="VARCHAR" property="weixin" />
+    <result column="qq" jdbcType="VARCHAR" property="qq" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="age" jdbcType="INTEGER" property="age" />
+    <result column="job" jdbcType="VARCHAR" property="job" />
+    <result column="year_income" jdbcType="DECIMAL" property="yearIncome" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="need_loan" jdbcType="INTEGER" property="needLoan" />
+    <result column="intention_state" jdbcType="INTEGER" property="intentionState" />
+    <result column="intention_product" jdbcType="INTEGER" property="intentionProduct" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="source" jdbcType="INTEGER" property="source" />
   </resultMap>
   <sql id="Base_Column_List">
     id, clue_id, product, description, next_contact_time, create_time, create_by, edit_time, 
     edit_by
   </sql>
+
+  <sql id="Base_Custom_List">
+    tct.id, clue_id, product, tct.description, tct.next_contact_time, tct.create_time, tct.create_by, tct.edit_time,
+    tct.edit_by, owner_id, activity_id, full_name, appellation, phone, weixin, qq, email, age,
+    job, year_income, address, need_loan, intention_state, intention_product, `state`,
+    `source`
+  </sql>
+
+  <!-- 分页查询客户管理 -->
+  <select id="getCustomersByPage" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Custom_List" />
+    from t_customer tct
+        left join t_clue tc on tct.clue_id = tc.id
+    <where>
+      <if test="query.keyword != null and query.keyword != ''">
+        AND (
+        tc.full_name LIKE CONCAT('%', #{query.keyword}, '%')
+        OR tc.phone LIKE CONCAT('%', #{query.keyword}, '%')
+        OR tc.weixin LIKE CONCAT('%', #{query.keyword}, '%')
+        OR tc.qq LIKE CONCAT('%', #{query.keyword}, '%')
+        OR tc.job LIKE CONCAT('%', #{query.keyword}, '%')
+        OR tc.description LIKE CONCAT('%', #{query.keyword}, '%')
+        )
+      </if>
+      <if test="query.startTime  != null">
+        and tct.create_time >= #{query.startTime}
+      </if>
+      <if test="query.endTime  != null">
+        <![CDATA[  and tct.create_time <= #{query.endTime}  ]]>
+      </if>
+      <if test="ownerIds != null and ownerIds.size() > 0">
+        AND tc.owner_id IN
+        <foreach item="ownerId" collection="ownerIds" open="(" separator="," close=")">
+          #{ownerId}
+        </foreach>
+      </if>
+      ${ query.filterSQL }
+    </where>
+    <!-- 安全排序处理 -->
+    ORDER BY ${@com.zs.crmserver.util.SqlUtils@safeSort(
+        pageQuery.sortField,
+        pageQuery.sortOrder,
+        "create_time",
+        "create_time", "edit_time"
+    )}
+  </select>
+
+  <!-- 导出 -->
+  <select id="selectCustomerByExcel" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Custom_List" />
+    from t_customer tct
+    left join t_clue tc on tct.clue_id = tc.id
+    <where>
+      <if test="idList != null and idList.size() > 0">
+        and tct.id in
+        <foreach collection="idList" item="id" open="(" close=")" separator=",">
+          #{id}
+        </foreach>
+      </if>
+    </where>
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
