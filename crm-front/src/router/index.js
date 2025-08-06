@@ -37,6 +37,11 @@ let router = createRouter({
           component : () => import('@/view/Customer')
         }
       ]
+    },
+    {
+      path: '/:pathMatch(.*)*', // 匹配所有未定义路径
+      name: 'NotFound',
+      component: () => import('@/view/NotFound') // 404页面组件
     }
   ]
 });

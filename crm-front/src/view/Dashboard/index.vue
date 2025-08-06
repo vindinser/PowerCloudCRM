@@ -17,76 +17,22 @@
           :router="true"
           :unique-opened="true"
         >
-
           <!-- 动态路由 -->
-          <!-- <el-sub-menu :index="index" v-for="(menuPermission, index) in user.menuPermissionList" :key="menuPermission.id">
+          <el-sub-menu v-for="(menuPermission, index) in userStore.userInfo.menuPermissionList" :key="menuPermission.id" :index="`${ index }`">
             <template #title>
-              <el-icon><component :is="menuPermission.icon"/></el-icon>
-              <span> {{menuPermission.name}} </span>
+              <el-icon>
+                <component :is="menuPermission.icon"/>
+              </el-icon>
+              <span>{{ menuPermission.name }}</span>
             </template>
             <el-menu-item v-for="subPermission in menuPermission.subPermissionList" :key="subPermission.id" :index="subPermission.url">
-              <el-icon><component :is="subPermission.icon"/></el-icon>
-              {{subPermission.name}}
-            </el-menu-item>
-          </el-sub-menu> -->
-          <el-sub-menu index="1">
-            <template #title>
               <el-icon>
-                <component :is="`OfficeBuilding`"/>
+                <component :is="subPermission.icon"/>
               </el-icon>
-              <span>市场活动</span>
-            </template>
-            <el-menu-item index="/dashboard/activity">
-              <el-icon>
-                <component :is="`Notification`"/>
-              </el-icon>
-              <span>市场活动</span>
-            </el-menu-item>
-          </el-sub-menu>
-          <el-sub-menu index="2">
-            <template #title>
-              <el-icon>
-                <component :is="`Operation`"/>
-              </el-icon>
-              <span>线索管理</span>
-            </template>
-            <el-menu-item index="/dashboard/clue">
-              <el-icon>
-                <component :is="`Film`"/>
-              </el-icon>
-              <span>线索管理</span>
-            </el-menu-item>
-          </el-sub-menu>
-          <el-sub-menu index="3">
-            <template #title>
-              <el-icon>
-                <component :is="`User`"/>
-              </el-icon>
-              <span>客户管理</span>
-            </template>
-            <el-menu-item index="/dashboard/customer">
-              <el-icon>
-                <component :is="`CreditCard`"/>
-              </el-icon>
-              <span>客户管理</span>
-            </el-menu-item>
-          </el-sub-menu>
-          <el-sub-menu index="7">
-            <template #title>
-              <el-icon>
-                <component :is="`CreditCard`"/>
-              </el-icon>
-              <span>用户管理</span>
-            </template>
-            <el-menu-item index="/dashboard/user">
-              <el-icon>
-                <component :is="`CreditCard`"/>
-              </el-icon>
-              <span>用户管理</span>
+              <span>{{ subPermission.name }}</span>
             </el-menu-item>
           </el-sub-menu>
         </el-menu>
-
       </el-aside>
 
       <!--右侧-->
@@ -124,6 +70,7 @@
 
 <script setup name="Dashboard">
   import useUserStore from '@/store/modules/user';
+  import { useRoute } from 'vue-router';
 
   // 控制仪表盘页面右侧内容体是否显示，true显示，false不显示
   const isRouterAlive = ref(true);
@@ -137,60 +84,21 @@
       isRouterAlive.value = true;
     });
   });
-  // provide() {
-  //   return {
-  //     //提供一个函数（要求是箭头函数）
-  //     reload: ()=> {
-  //       this.isRouterAlive = false; //右侧内容隐藏
-  //       this.$nextTick(() => { //$nextTick(), 当数据更新了，在dom中渲染后，自动执行该函数，
-  //         this.isRouterAlive = true;
-  //       })
-  //     },
-
-  //     //提供一个字符串
-  //     content: "是对负荷计算东方红郡凯撒的合法户籍卡",
-
-  //     //提供一个数字
-  //     age: 28,
-
-  //     //提供一个对象
-  //     user : {id: 1098, name: "张三", age: 18},
-
-  //     //提供一个数组
-  //     arr : [12, 56, 109, 356, 8901]
-
-  //     //......
-  //   }
-  // }
 
   const userStore = useUserStore();
-
-  // 登录用户对象，初始值是空
-  const user = ref({});
-
-  console.log('🚀 ~ userInfo:', userStore.userInfo);
 
   //当前访问的路由路径
   const currentRouterPath = ref('');
   // 加载当前路由路径
   const loadCurrentRouterPath = () => {
-    console.log('加载当前路由路径');
-  // let path = this.$route.path; //   /dashboard/activity/add
-  // let arr = path.split('/'); //   [  ,dashboard, activity, add]
+    const route = useRoute();
 
-  // if (arr.length > 3) {
-  //   this.currentRouterPath = '/' + arr[1] + '/' + arr[2];
-  // } else {
-  //   this.currentRouterPath = path;
-  // }
+    currentRouterPath.value = route.path;
   };
 
   onMounted(() => {
     loadCurrentRouterPath();
   });
-// watch(propData, (newVal, oldVal) => {})
-
-// defineExpose({}) // 将方法、数据暴露给父组件
 </script>
 
 <style lang="scss" scoped>

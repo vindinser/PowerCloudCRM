@@ -120,14 +120,16 @@ public class TokenVerifyFilter extends OncePerRequestFilter {
                 }
             }).start();*/
 
+            // 刷新token（放到主线程，防止在异步线程中尝试访问已被Tomcat回收的请求对象(RequestFacade)问题）
+            final String rememberMe = request.getHeader("rememberMe");
+            final Integer userId = tUser.getId();
+
             //异步处理（更好的方式，使用线程池去执行）
             threadPoolTaskExecutor.execute(() -> {
-                //刷新token
-                String rememberMe = request.getHeader("rememberMe");
                 if (Boolean.parseBoolean(rememberMe)) {
-                    redisService.expire(Constants.REDIS_JWT_KEY + tUser.getId(), Constants.EXPIRE_TIME, TimeUnit.SECONDS);
+                    redisService.expire(Constants.REDIS_JWT_KEY + userId, Constants.EXPIRE_TIME, TimeUnit.SECONDS);
                 } else {
-                    redisService.expire(Constants.REDIS_JWT_KEY + tUser.getId(), Constants.DEFAULT_EXPIRE_TIME, TimeUnit.SECONDS);
+                    redisService.expire(Constants.REDIS_JWT_KEY + userId, Constants.DEFAULT_EXPIRE_TIME, TimeUnit.SECONDS);
                 }
             });
 

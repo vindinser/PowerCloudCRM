@@ -3,9 +3,8 @@ package com.zs.crmserver.service.impl;
 import com.github.pagehelper.PageInfo;
 import com.zs.crmserver.constants.Constants;
 import com.zs.crmserver.manager.RedisManager;
-import com.zs.crmserver.mapper.TRoleMapper;
+import com.zs.crmserver.manager.UserManager;
 import com.zs.crmserver.mapper.TUserMapper;
-import com.zs.crmserver.model.TRole;
 import com.zs.crmserver.model.TUser;
 import com.zs.crmserver.query.BasePageQuery;
 import com.zs.crmserver.query.BaseQuery;
@@ -22,7 +21,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,33 +34,22 @@ public class UserServiceImpl implements UserService {
     @Resource
     private PasswordEncoder passwordEncoder;
 
-    // 角色
-    @Resource
-    private TRoleMapper tRoleMapper;
-
     @Resource
     private RedisManager redisManager;
+
+    @Resource
+    private UserManager userManager;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        TUser tuser = tUserMapper.selectByLoginAct(username);
+        TUser tUser = tUserMapper.selectByLoginAct(username);
 
-        if(tuser == null){
+        if(tUser == null){
             throw new UsernameNotFoundException("登录账号不存在");
         }
 
-        // 查询用户角色
-        List<TRole> tRoleList = tRoleMapper.selectByUserId(tuser.getId());
-
-        List<String> stringRoleList = new ArrayList<>();
-        tRoleList.forEach(tRole -> {
-            stringRoleList.add(tRole.getRole());
-        });
-
-        tuser.setRoleList(stringRoleList);
-
-        return tuser;
+        return userManager.loadUser(tUser);
     }
 
     @Override
