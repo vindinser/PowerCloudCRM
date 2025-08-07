@@ -34,6 +34,7 @@
     id, `name`, code, url, `type`, parent_id, order_no, icon
   </sql>
 
+  <!-- 获取菜单权限 -->
   <select id="selectMenuPermissionByUserId" parameterType="java.lang.Integer" resultMap="PermissionResultMap">
     SELECT
       tp.*,
@@ -48,6 +49,20 @@
       tur.user_id = #{userId, jdbcType=INTEGER}
       AND tp.type = 'menu'
       and childTp.type = 'menu'
+  </select>
+
+  <!-- 获取功能权限 -->
+  <select id="selectButtonPermissionByUserId" parameterType="java.lang.Integer" resultMap="PermissionResultMap">
+    SELECT
+      tp.*
+    FROM
+      t_permission tp
+        LEFT JOIN t_role_permission trp ON tp.id = trp.permission_id
+        LEFT JOIN t_role tr ON trp.role_id = tr.id
+        LEFT JOIN t_user_role tur ON tr.id = tur.role_id
+    WHERE
+      tur.user_id = #{userId, jdbcType=INTEGER}
+      AND tp.type = 'button'
   </select>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">

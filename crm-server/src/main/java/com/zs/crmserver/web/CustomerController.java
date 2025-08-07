@@ -17,6 +17,8 @@ import com.zs.crmserver.util.PageResponseUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,6 +37,7 @@ public class CustomerController {
     @Resource
     private CustomerService customerService;
 
+    @PreAuthorize(value = "hasAuthority('customer:list')")
     @GetMapping("api/customer")
     public R getCustomers(
         BaseQuery query,
@@ -45,6 +48,8 @@ public class CustomerController {
         return PageResponseUtils.buildPageResponse(list);
     }
 
+    @PreAuthorize(value = "hasAuthority('customer:export')")
+    @Transactional(rollbackFor = Exception.class)
     @GetMapping(value = "/api/exportExcel")
     public void exportExcel(HttpServletResponse response, @RequestParam(value = "ids", required = false) String ids) throws IOException {
 

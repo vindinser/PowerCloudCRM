@@ -1,14 +1,12 @@
 package com.zs.crmserver.config;
 
 import com.zs.crmserver.config.filter.TokenVerifyFilter;
-import com.zs.crmserver.config.handler.ExceptionHandlerProvider;
-import com.zs.crmserver.config.handler.MyAuthenticationFailureHandler;
-import com.zs.crmserver.config.handler.MyAuthenticationSuccessHandler;
-import com.zs.crmserver.config.handler.MyLogoutSuccessHandler;
+import com.zs.crmserver.config.handler.*;
 import com.zs.crmserver.constants.Constants;
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,6 +20,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+@EnableMethodSecurity // 开启方法级别的权限检查
 @Configuration
 public class SecurityConfig {
 
@@ -33,6 +32,9 @@ public class SecurityConfig {
 
     @Resource
     private MyLogoutSuccessHandler myLogoutSuccessHandler;
+
+    @Resource
+    private MyAccessDeniedHandler myAccessDeniedHandler;
 
     @Resource
     private TokenVerifyFilter tokenVerifyFilter;
@@ -88,6 +90,12 @@ public class SecurityConfig {
                        logout.logoutUrl("/api/logout") // 该地址不需要controller，由框架处理
                            .logoutSuccessHandler(myLogoutSuccessHandler);
                    })
+
+                   // 这个是没有权限访问时触发
+                   .exceptionHandling((exceptionHandling) -> {
+                       exceptionHandling.accessDeniedHandler(myAccessDeniedHandler);
+                   })
+
                    .build();
     }
 

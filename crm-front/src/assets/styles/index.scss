@@ -176,3 +176,15 @@ div:focus {
 .multiselect--active {
   z-index: 1000 !important;
 }
+
+.permission-denied {
+  opacity: 0.5;
+  cursor: not-allowed;
+  
+  /* 非表单元素保持隐藏 */
+  &:not(button):not(input):not(select):not(textarea) {
+    visibility: hidden;
+    position: absolute;
+    pointer-events: none;
+  }
+}

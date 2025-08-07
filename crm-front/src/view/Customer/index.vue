@@ -34,8 +34,8 @@
           </el-col>
           <el-col :xs="24" :sm="12" :md="8" :lg="6">
             <el-form-item label="">
-              <el-button type="primary" :icon="Search" @click="list.onSearch">查询</el-button>
-              <el-button :icon="Delete" @click="list.onReset">清除</el-button>
+              <el-button v-hasPermission="'customer:list'" type="primary" :icon="Search" @click="list.onSearch">查询</el-button>
+              <el-button v-hasPermission="'customer:list'" :icon="Delete" @click="list.onReset">清除</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -56,16 +56,16 @@
       @button-click="(({ row }) => list.openDetail('Detail', { row }))"
     >
       <template #head-right>
-        <!-- <el-button type="primary" :icon="Plus" @click="list.openDetail('AddForm', {})">录入客户</el-button>
-        <el-button type="danger" @click="list.openDetail('batch', {}, '删除')">批量删除</el-button> -->
-        <el-button @click="list.openDetail('export', {}, '导出')">导出</el-button>
+        <!-- <el-button v-hasPermission="'customer:add'" type="primary" :icon="Plus" @click="list.openDetail('AddForm', {})">录入客户</el-button>
+        <el-button v-hasPermission="'customer:delete'" type="danger" @click="list.openDetail('batch', {}, '删除')">批量删除</el-button> -->
+        <el-button v-hasPermission="'customer:export'" @click="list.openDetail('export', {}, '导出')">导出</el-button>
       </template>
       <!-- <template #table-oper>
         <el-table-column label="操作" min-width="220" fixed="right">
           <template #default="scope">
-            <el-button type="primary" link @click="list.openDetail('Detail', scope)">详情</el-button>
-            <el-button type="warning" link @click="list.openDetail('EditForm', scope)">编辑</el-button>
-            <el-button type="danger" link @click="list.openDetail('del', scope, '删除')">删除</el-button>
+            <el-button v-hasPermission="'customer:view'" type="primary" link @click="list.openDetail('Detail', scope)">详情</el-button>
+            <el-button v-hasPermission="'customer:view'" type="warning" link @click="list.openDetail('EditForm', scope)">编辑</el-button>
+            <el-button v-hasPermission="'customer:delete'" type="danger" link @click="list.openDetail('del', scope, '删除')">删除</el-button>
           </template>
         </el-table-column>
       </template> -->

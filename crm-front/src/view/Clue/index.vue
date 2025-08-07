@@ -34,8 +34,8 @@
           </el-col>
           <el-col :xs="24" :sm="12" :md="8" :lg="6">
             <el-form-item label="">
-              <el-button type="primary" :icon="Search" @click="list.onSearch">查询</el-button>
-              <el-button :icon="Delete" @click="list.onReset">清除</el-button>
+              <el-button v-hasPermission="'clue:list'" type="primary" :icon="Search" @click="list.onSearch">查询</el-button>
+              <el-button v-hasPermission="'clue:list'" :icon="Delete" @click="list.onReset">清除</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -58,17 +58,18 @@
       <template #head-right>
         <!-- 手续导入 -->
         <input ref="ImportExcelInput" type="file" name="Excel" accept=".xls, .xlsx" style="display: none" @change="getExcelData($event)" >
-        <el-button @click="importExcel">导入线索</el-button>
-        <el-button type="primary" :icon="Plus" @click="list.openDetail('AddForm', {})">录入线索</el-button>
-        <el-button type="danger" @click="list.openDetail('batch', {}, '删除')">批量删除</el-button>
+        <el-button v-hasPermission="'clue:import'" @click="importExcel">导入线索</el-button>
+        <el-button v-hasPermission="'clue:add'" type="primary" :icon="Plus" @click="list.openDetail('AddForm', {})">录入线索</el-button>
+        <el-button v-hasPermission="'clue:delete'" type="danger" @click="list.openDetail('batch', {}, '删除')">批量删除</el-button>
       </template>
       <template #table-oper>
         <el-table-column label="操作" min-width="220" fixed="right">
           <template #default="scope">
-            <el-button type="primary" link @click="list.openDetail('Detail', scope)">详情</el-button>
-            <el-button type="warning" link @click="list.openDetail('EditForm', scope)">编辑</el-button>
-            <el-button type="danger" link @click="list.openDetail('del', scope, '删除')">删除</el-button>
+            <el-button v-hasPermission="'clue:view'" type="primary" link @click="list.openDetail('Detail', scope)">详情</el-button>
+            <el-button v-hasPermission="'clue:edit'" type="warning" link @click="list.openDetail('EditForm', scope)">编辑</el-button>
+            <el-button v-hasPermission="'clue:delete'" type="danger" link @click="list.openDetail('del', scope, '删除')">删除</el-button>
             <el-button
+              v-hasPermission="'clue:edit'"
               type="success"
               :disabled="scope.row.state === -1"
               link

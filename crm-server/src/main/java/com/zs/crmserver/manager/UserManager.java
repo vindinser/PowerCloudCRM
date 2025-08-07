@@ -34,8 +34,16 @@ public class UserManager {
         tUser.setRoleList(stringRoleList);
 
         // 菜单权限
-        List<TPermission> menuPermissionList = tPermissionMapper.selectMenuPermissionByUserId(tUser.getId());
+        List<TPermission> menuPermissionList = tPermissionMapper.selectMenuPermissionByUserId(userId);
         tUser.setMenuPermissionList(menuPermissionList);
+
+        // 功能权限
+        List<TPermission> buttonPermissionList = tPermissionMapper.selectButtonPermissionByUserId(userId);
+        List<String> stringPermissionList = new ArrayList<>();
+        buttonPermissionList.forEach(tPermission -> {
+            stringPermissionList.add(tPermission.getCode()); // 权限标识符
+        });
+        tUser.setPermissionList(stringPermissionList); // 设置用户的权限标识符
 
         return tUser;
     }

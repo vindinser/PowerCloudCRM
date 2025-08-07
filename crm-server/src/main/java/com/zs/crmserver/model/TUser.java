@@ -119,15 +119,18 @@ public class TUser implements UserDetails, Serializable {
     @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-        // if(this.getRoleList != null) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
         if (!ObjectUtils.isEmpty(this.getRoleList())) {
             // 角色
-            this.getRoleList().forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role)));
+            this.getRoleList().forEach(role ->
+                authorities.add(new SimpleGrantedAuthority(role))
+            );
         }
         if (!ObjectUtils.isEmpty(this.getPermissionList())) {
             // 权限
-            this.getPermissionList().forEach(permission -> authorities.add(new SimpleGrantedAuthority("ROLE_" + permission)));
+            this.getPermissionList().forEach(permission ->
+                authorities.add(new SimpleGrantedAuthority(permission))
+            );
         }
         return authorities;
     }

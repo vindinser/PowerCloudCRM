@@ -20,7 +20,7 @@ public interface TCustomerMapper {
 
     int updateByPrimaryKey(TCustomer record);
 
-    @DataScope(tableAlias = "tct", tableField = "owner_id")
+    @DataScope(tableAlias = "tct", tableField = "create_by")
     List<TCustomer> getCustomersByPage(BaseQuery query, BasePageQuery pageQuery, List<Long> ownerIds);
 
     List<TCustomer> selectCustomerByExcel(List<String> idList);

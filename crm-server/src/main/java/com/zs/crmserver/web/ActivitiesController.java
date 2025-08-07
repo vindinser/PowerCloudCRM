@@ -10,6 +10,8 @@ import com.zs.crmserver.result.R;
 import com.zs.crmserver.service.ActivityService;
 import com.zs.crmserver.util.PageResponseUtils;
 import jakarta.annotation.Resource;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +22,7 @@ public class ActivitiesController {
     @Resource
     private ActivityService activitiesService;
 
+    @PreAuthorize(value = "hasAuthority('activity:list')")
     @GetMapping("/api/activities")
     public R activitiesPage(
         BaseQuery query,
@@ -30,6 +33,8 @@ public class ActivitiesController {
         return PageResponseUtils.buildPageResponse(userList);
     }
 
+    @PreAuthorize(value = "hasAuthority('activity:add')")
+    @Transactional(rollbackFor = Exception.class)
     @PostMapping("/api/activities/add")
     public R addActivity(@RequestBody ActivityQuery activityQuery, @RequestHeader(Constants.TOKEN_NAME) String token) {
         activityQuery.setToken(token);
@@ -37,6 +42,8 @@ public class ActivitiesController {
         return save >= 1 ? R.OK() : R.FAIL();
     }
 
+    @PreAuthorize(value = "hasAuthority('activity:edit')")
+    @Transactional(rollbackFor = Exception.class)
     @PutMapping("/api/activities/update")
     public R updateActivity(@RequestBody ActivityQuery activityQuery, @RequestHeader(Constants.TOKEN_NAME) String token) {
         activityQuery.setToken(token);
@@ -44,18 +51,23 @@ public class ActivitiesController {
         return update >= 1 ? R.OK() : R.FAIL();
     }
 
+    @PreAuthorize(value = "hasAuthority('activity:view')")
     @GetMapping("/api/activities/{id}")
     public R getActivityById(@PathVariable(value = "id") Integer id) {
         TActivity tActivity = activitiesService.getActivityById(id);
         return R.OK(tActivity);
     }
 
+    @PreAuthorize(value = "hasAuthority('activity:delete')")
+    @Transactional(rollbackFor = Exception.class)
     @DeleteMapping("/api/activities/{id}")
     public R delActivity(@PathVariable(value = "id") Integer id) {
         int del = activitiesService.delActivityById(id);
         return del >= 1 ?  R.OK() : R.FAIL();
     }
 
+    @PreAuthorize(value = "hasAuthority('activity:delete')")
+    @Transactional(rollbackFor = Exception.class)
     @DeleteMapping("api/activities/del")
     public R batchDelActivities(@RequestParam(value = "ids") Integer[] ids) {
         int batchDel = activitiesService.batchDelActivities(ids);

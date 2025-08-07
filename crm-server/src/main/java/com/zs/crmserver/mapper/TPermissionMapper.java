@@ -18,4 +18,6 @@ public interface TPermissionMapper {
     int updateByPrimaryKey(TPermission record);
 
     List<TPermission> selectMenuPermissionByUserId(Integer id);
+
+    List<TPermission> selectButtonPermissionByUserId(Integer userId);
 }

@@ -18,10 +18,16 @@ import plugins from './plugins'; // plugins
 import 'viewerjs/dist/viewer.css'; // 引入样式
 import VueViewer from 'v-viewer';
 
+// 导入指令注册函数
+import { registerDirectives } from '@/directives';
+
 const app = createApp(App);
 
 app.use(store);
 app.use(plugins);
+
+// 注册自定义指令
+registerDirectives(app, store);
 
 // app.use(ElementPlus);
 // 注册所有图标（配置自动导入但未生效！！！）

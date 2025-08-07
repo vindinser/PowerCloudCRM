@@ -12,7 +12,9 @@ import com.zs.crmserver.service.UserService;
 import com.zs.crmserver.util.JWTUtils;
 import com.zs.crmserver.util.PageResponseUtils;
 import jakarta.annotation.Resource;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +42,7 @@ public class UserController {
         return R.OK();
     }
 
+    @PreAuthorize(value = "hasAuthority('user:list')")
     @GetMapping("/api/users")
     public R userPage(
         BasePageQuery query,
@@ -57,12 +60,15 @@ public class UserController {
         return PageResponseUtils.buildPageResponse(userList);
     }
 
+    @PreAuthorize(value = "hasAuthority('user:view')")
     @GetMapping("/api/user/{id}")
     public R userDetail(@PathVariable(value = "id") Integer id) {
         TUser tUser = userService.getUserById(id);
         return R.OK(tUser);
     }
 
+    @PreAuthorize(value = "hasAuthority('user:add')")
+    @Transactional(rollbackFor = Exception.class)
     @PostMapping("/api/user/add")
     public R addUser(@RequestBody UserQuery userQuery, @RequestHeader("Authorization") String token) {
         // 设置Token
@@ -72,6 +78,8 @@ public class UserController {
         return save >= 1 ? R.OK() : R.FAIL();
     }
 
+    @PreAuthorize(value = "hasAuthority('user:edit')")
+    @Transactional(rollbackFor = Exception.class)
     @PutMapping("/api/user/update")
     public R updateUser(@RequestBody UserQuery userQuery, @RequestHeader("Authorization") String token) {
         // 设置Token
@@ -97,12 +105,16 @@ public class UserController {
         }
     }
 
+    @PreAuthorize(value = "hasAuthority('user:delete')")
+    @Transactional(rollbackFor = Exception.class)
     @DeleteMapping("/api/user/{id}")
     public R delUser(@PathVariable(value = "id") Integer id) {
         int del = userService.delUserById(id);
         return del >= 1 ? R.OK() : R.FAIL();
     }
 
+    @PreAuthorize(value = "hasAuthority('user:delete')")
+    @Transactional(rollbackFor = Exception.class)
     @DeleteMapping("/api/user/del")
     public R batchDelUser(@RequestParam(value = "ids") Integer[] ids) {
         int batchDel = userService.batchDelUserByIds(ids);

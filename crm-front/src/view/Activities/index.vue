@@ -34,8 +34,8 @@
           </el-col>
           <el-col :xs="24" :sm="12" :md="8" :lg="6">
             <el-form-item label="">
-              <el-button type="primary" :icon="Search" @click="list.onSearch">查询</el-button>
-              <el-button :icon="Delete" @click="list.onReset">清除</el-button>
+              <el-button v-hasPermission="'activity:list'" type="primary" :icon="Search" @click="list.onSearch">查询</el-button>
+              <el-button v-hasPermission="'activity:list'" :icon="Delete" @click="list.onReset">清除</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -56,15 +56,15 @@
       @button-click="(({ row }) => list.openDetail('Detail', { row }))"
     >
       <template #head-right>
-        <el-button type="primary" :icon="Plus" @click="list.openDetail('AddForm', {})">录入市场活动</el-button>
-        <el-button type="danger" @click="list.openDetail('batch', {}, '删除')">批量删除</el-button>
+        <el-button v-hasPermission="'activity:add'" type="primary" :icon="Plus" @click="list.openDetail('AddForm', {})">录入市场活动</el-button>
+        <el-button v-hasPermission="'activity:delete'" type="danger" @click="list.openDetail('batch', {}, '删除')">批量删除</el-button>
       </template>
       <template #table-oper>
         <el-table-column label="操作" min-width="150">
           <template #default="scope">
-            <el-button type="primary" link @click="list.openDetail('Detail', scope)">详情</el-button>
-            <el-button type="primary" link @click="list.openDetail('EditForm', scope)">编辑</el-button>
-            <el-button type="danger" link @click="list.openDetail('del', scope, '删除')">删除</el-button>
+            <el-button v-hasPermission="'activity:view'" type="primary" link @click="list.openDetail('Detail', scope)">详情</el-button>
+            <el-button v-hasPermission="'activity:edit'" type="primary" link @click="list.openDetail('EditForm', scope)">编辑</el-button>
+            <el-button v-hasPermission="'activity:delete'" type="danger" link @click="list.openDetail('del', scope, '删除')">删除</el-button>
           </template>
         </el-table-column>
       </template>

@@ -11,6 +11,8 @@ import com.zs.crmserver.result.R;
 import com.zs.crmserver.service.ClueService;
 import com.zs.crmserver.util.PageResponseUtils;
 import jakarta.annotation.Resource;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +25,7 @@ public class ClueController {
     @Resource
     public ClueService clueService;
 
+    @PreAuthorize(value = "hasAuthority('clue:list')")
     @GetMapping("/api/clues")
     public R cluePage(
         BaseQuery query,
@@ -39,6 +42,8 @@ public class ClueController {
         return check ? R.OK() : R.FAIL();
     }
 
+    @PreAuthorize(value = "hasAuthority('clue:add')")
+    @Transactional(rollbackFor = Exception.class)
     @PostMapping("/api/clues")
     public R addClue(@RequestBody ClueQuery clueQuery, @RequestHeader(value = Constants.TOKEN_NAME)  String token) {
         Boolean b = clueService.checkPhone(clueQuery.getPhone());
@@ -51,6 +56,8 @@ public class ClueController {
         }
     }
 
+    @PreAuthorize(value = "hasAuthority('clue:edit')")
+    @Transactional(rollbackFor = Exception.class)
     @PutMapping("/api/clues")
     public R updateClue(@RequestBody ClueQuery clueQuery, @RequestHeader(value = Constants.TOKEN_NAME)  String token) {
         clueQuery.setToken(token);
@@ -58,30 +65,39 @@ public class ClueController {
         return update > 0 ? R.OK() : R.FAIL();
     }
 
+    @PreAuthorize(value = "hasAuthority('clue:view')")
+    @Transactional(rollbackFor = Exception.class)
     @GetMapping("/api/clues/detail/{id}")
     public R getClueDetail(@PathVariable String id) {
         TClue tClue = clueService.getClueById(id);
         return R.OK(tClue);
     }
 
+    @PreAuthorize(value = "hasAuthority('clue:delete')")
+    @Transactional(rollbackFor = Exception.class)
     @DeleteMapping("/api/clues/{id}")
     public R delClue(@PathVariable Integer id) {
         Integer del = clueService.delClueById(id);
         return del > 0 ? R.OK() : R.FAIL();
     }
 
+    @PreAuthorize(value = "hasAuthority('clue:delete')")
+    @Transactional(rollbackFor = Exception.class)
     @DeleteMapping("/api/clues")
     public R batchDelClues(@RequestParam(value = "ids") Integer[] ids) {
         Integer batchDel = clueService.batchDelClues(ids);
         return batchDel >= 1 ?  R.OK() : R.FAIL();
     }
 
+    @PreAuthorize(value = "hasAuthority('clue:import')")
     @PostMapping("api/clues/importExcel")
     public R importClue(MultipartFile file, @RequestHeader(value = Constants.TOKEN_NAME)  String token) throws IOException {
         clueService.importClue(file.getInputStream(), token);
         return R.OK();
     }
 
+    @PreAuthorize(value = "hasAuthority('clue:edit')")
+    @Transactional(rollbackFor = Exception.class)
     @PostMapping("/api/clue/customer")
     public R transferCustomer(
         @RequestBody CustomerQuery customerQuery,
