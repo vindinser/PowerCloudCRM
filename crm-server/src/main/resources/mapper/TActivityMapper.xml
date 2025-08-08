@@ -37,6 +37,12 @@
     edit_time, edit_by
   </sql>
 
+  <select id="selectByCount" resultType="java.lang.Integer">
+    select
+      count(0)
+    from t_activity
+  </select>
+
   <select id="selectOngoingActivity" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

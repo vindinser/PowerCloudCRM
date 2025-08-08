@@ -4,7 +4,7 @@
     <el-container>
       <!--左侧-->
       <el-aside :width="userStore.isCollapse ? '64px' : '200px'">
-        <div class="menuTitle">PowerCloudCRM</div>
+        <div class="menuTitle">{{ `${ userStore.isCollapse ? '' : 'PowerCloud' }CRM` }}</div>
         <el-menu
           active-text-color="#ffd04b"
           background-color="#334157"

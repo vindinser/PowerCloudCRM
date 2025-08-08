@@ -19,6 +19,34 @@
     id, tran_no, customer_id, money, expected_date, stage, description, next_contact_time, 
     create_time, create_by, edit_time, edit_by
   </sql>
+
+  <select id="selectBySuccessTranAmount" resultType="java.math.BigDecimal">
+    select
+      sum(money)
+    from t_tran
+    where stage = 42
+  </select>
+
+  <select id="selectByTotalTranAmount" resultType="java.math.BigDecimal">
+    select
+      sum(money)
+    from t_tran
+  </select>
+
+  <select id="selectByTotalTranCount" resultType="java.lang.Integer">
+    SELECT
+      count( 0 )
+    FROM
+        ( SELECT DISTINCT customer_id FROM t_tran ) t
+  </select>
+
+  <select id="selectBySuccessTranCount" resultType="java.lang.Integer">
+    SELECT
+      count( 0 )
+    FROM
+        ( SELECT DISTINCT customer_id FROM t_tran where stage = 42 ) t
+  </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

@@ -34,6 +34,25 @@
     `source`, description, next_contact_time, create_time, create_by, edit_time, edit_by
   </sql>
 
+  <select id="selectClueByCount" resultType="java.lang.Integer">
+    select
+      count(0)
+    from t_clue
+  </select>
+
+  <select id="selectBySource" resultType="com.zs.crmserver.result.NameValue">
+    SELECT
+      count( tc.id ) value,
+      tdv.type_value name
+    FROM
+      t_clue tc
+      LEFT JOIN t_dic_value tdv ON tc.source = tdv.id
+    WHERE
+      tdv.type_value IS NOT NULL
+    GROUP BY
+      tc.source
+  </select>
+
   <!-- 线索管理列表查询 -->
   <select id="selectClueByPage" resultMap="BaseResultMap">
     select

@@ -20,6 +20,9 @@ let router = createRouter({
       component : () => import('@/view/Dashboard'),
       children: [
         {
+          path: '',
+          component : () => import('@/view/Welecome')
+        }, {
           // 子路由路径不能以 / 开头
           path: 'user',
           component : () => import('@/view/User')
@@ -35,6 +38,10 @@ let router = createRouter({
           // 客户管理
           path: 'customer',
           component : () => import('@/view/Customer')
+        }, {
+          // 数据分析
+          path: 'statistic',
+          component : () => import('@/view/Statistic')
         }
       ]
     },

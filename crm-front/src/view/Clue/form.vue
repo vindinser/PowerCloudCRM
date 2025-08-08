@@ -43,7 +43,6 @@
 <script setup name="ClueForm">
   import ZSDetail from '@/components/ZSDetail';
   import { addClue, checkPhone, updateClue, loadDicValue } from '@/api/clue.js';
-  import { reactive } from 'vue';
   import useUserStore from '@/store/modules/user';
 
   const userStore = useUserStore();

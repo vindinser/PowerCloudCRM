@@ -4,6 +4,7 @@ import com.zs.crmserver.commons.DataScope;
 import com.zs.crmserver.model.TClue;
 import com.zs.crmserver.query.BasePageQuery;
 import com.zs.crmserver.query.BaseQuery;
+import com.zs.crmserver.result.NameValue;
 
 import java.util.List;
 
@@ -30,4 +31,8 @@ public interface TClueMapper {
     Integer deleteCluesByPrimaryKey(Integer[] ids);
 
     void saveClue(List<TClue> tClueList);
+
+    Integer selectClueByCount();
+
+    List<NameValue> selectBySource();
 }

@@ -24,4 +24,6 @@ public interface TCustomerMapper {
     List<TCustomer> getCustomersByPage(BaseQuery query, BasePageQuery pageQuery, List<Long> ownerIds);
 
     List<TCustomer> selectCustomerByExcel(List<String> idList);
+
+    Integer selectByCount();
 }

@@ -7,6 +7,7 @@ import com.zs.crmserver.query.BasePageQuery;
 import com.zs.crmserver.query.BaseQuery;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface TActivityMapper {
@@ -31,4 +32,6 @@ public interface TActivityMapper {
     int deleteActivities(Integer[] ids);
 
     List<TActivity> selectOngoingActivity();
+
+    Integer selectByCount();
 }

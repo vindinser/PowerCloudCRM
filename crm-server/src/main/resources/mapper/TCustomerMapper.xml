@@ -42,6 +42,12 @@
     `source`
   </sql>
 
+  <select id="selectByCount" resultType="java.lang.Integer">
+    select
+      count(0)
+    from t_customer
+  </select>
+
   <!-- 分页查询客户管理 -->
   <select id="getCustomersByPage" resultMap="BaseResultMap">
     select
