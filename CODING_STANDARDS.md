@@ -8,6 +8,28 @@
 
 ---
 
+## 环境与工具链（mise）
+
+> 所有代码（含 AI 生成的代码）应在项目锁定的运行时版本下开发与验证。
+
+本项目使用 [mise](https://mise.jdx.dev) 统一管理 **Node.js / JDK** 多版本，根目录 `mise.toml` 即版本清单：
+
+```toml
+[tools]
+node = "20.12.1"
+java = "local-jdk17"
+```
+
+规则：
+
+1. **Node.js 锁定 20.12.1、JDK 锁定 17**。禁止使用系统全局其他版本跑构建；切换版本交给 mise（进入目录自动切换）。
+2. **JDK 通过 `mise link` 引用本机安装**（不重复下载）：`mise link java@local-jdk17 "D:/Utils/Java/jdk-17"`。
+3. **未激活 shell 时命令加前缀**：`mise exec -- ./mvnw compile`、`mise exec -- node -v`；激活后（`mise activate pwsh` 写入 `$PROFILE`）则直接使用。
+4. **验证命令**：前端用 `npx eslint <文件>`（快速）或 `npm run lint`（全量）；后端用 `mise exec -- ./mvnw compile`（编译验证）。
+5. 本机存在多个 JDK（8/17/21/24）时，统一在各项目 `mise.toml` 中声明，**不得再改系统 `JAVA_HOME`**。
+
+---
+
 ## 一、通用规范
 
 ### 1.1 Git 提交规范

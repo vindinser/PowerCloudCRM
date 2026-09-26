@@ -12,27 +12,47 @@
 
 | 工具 | 版本要求 | 说明 |
 |------|----------|------|
-| JDK | 17+ | Java 运行环境 |
+| JDK | 17（项目锁定） | Java 运行环境，推荐用 mise 管理 |
 | Maven | 3.8+ | 构建工具（使用 Maven Wrapper） |
+| mise | 2024 年中以后的版本 | JDK 多版本管理（见 1.2） |
 | MySQL | 8.0+ | 数据库 |
 | Redis | 6.0+ | 缓存 |
 | IDE | IntelliJ IDEA | 后端开发（推荐） |
 
-### 1.2 项目克隆
+### 1.2 环境管理（mise）
+
+后端 JDK 由 [mise](https://mise.jdx.dev) 管理，版本清单在根目录 `mise.toml`（`java = "local-jdk17"`）。
+
+```powershell
+# 一次性安装（已安装可跳过）
+winget install jdx.mise
+'mise activate pwsh | Out-String | Invoke-Expression' | Add-Content $PROFILE
+```
+
+```bash
+mise install                  # 安装锁定的 JDK 17
+mise current                  # 查看生效版本
+mise exec -- ./mvnw -v        # 验证：Java version 应为 17.x
+```
+
+> 首次使用需把本机已安装的 JDK 注册给 mise：`mise link java@local-jdk17 "D:/Utils/Java/jdk-17"`。
+> 未激活 shell 时命令加 `mise exec --` 前缀，确保使用锁定版本。
+
+### 1.3 项目克隆
 
 ```bash
 git clone <repo-url>
 cd PowerCloudCRM/crm-server
 ```
 
-### 1.3 数据库初始化
+### 1.4 数据库初始化
 
 ```bash
 mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS powercloud DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 mysql -u root -p powercloud < ../sql/powercloud.sql
 ```
 
-### 1.4 IDE 配置
+### 1.5 IDE 配置
 
 1. 打开 `crm-server` 目录
 2. 导入为 Maven 项目
@@ -67,6 +87,8 @@ spring:
 ```
 
 服务默认运行在 `http://localhost:8080`
+
+> 已配置 mise 时 `./mvnw` 自动使用锁定的 JDK 17；未激活 shell 时使用 `mise exec -- ./mvnw spring-boot:run`。
 
 ### 2.3 验证启动
 
@@ -117,7 +139,7 @@ git push origin feature/user-export
 ### 4.1 快速校验
 
 ```bash
-./mvnw clean install
+mise exec -- ./mvnw compile
 ```
 
 IDE 格式化：`Code` → `Reformat Code`（快捷键：`Ctrl+Alt+L`）
@@ -180,7 +202,7 @@ chore: 更新依赖版本
 
 1. 从 `develop` 创建功能分支
 2. 完成开发并提交（确保提交信息符合规范）
-3. 运行代码检查：`./mvnw clean install`
+3. 运行代码检查：`mise exec -- ./mvnw compile`
 4. 推送到远程：`git push origin feature/xxx`
 5. 在 GitLab/GitHub 创建 Pull Request
 
@@ -234,7 +256,7 @@ chore: 更新依赖版本
 - [ ] 返回 R 对象
 - [ ] 分页使用 PageHelperUtils
 - [ ] 写操作有 @Transactional
-- [ ] 项目通过编译
+- [ ] `mise exec -- ./mvnw compile` 通过编译（JDK 17）
 ```
 
 ---

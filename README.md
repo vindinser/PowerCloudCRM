@@ -18,6 +18,7 @@
 - [数据库设计](#数据库设计)
 - [缓存与安全](#缓存与安全)
 - [快速开始](#快速开始)
+- [环境管理（mise）](#环境管理mise)
 - [常用命令](#常用命令)
 - [API 说明](#api-说明)
 - [部署指南](#部署指南)
@@ -34,6 +35,7 @@
 | **前端** | Vue 3 + Vite + Element Plus + Axios + Pinia + Vue Router + SCSS |
 | **后端** | Spring Boot 3.4.2 + Spring Security + MyBatis + MySQL + Redis + JWT |
 | **构建工具** | Maven（后端）、npm（前端） |
+| **版本管理** | [mise](https://mise.jdx.dev)（Node.js / JDK 多版本统一管理，进目录自动切换） |
 | **其他组件** | EasyExcel、ECharts、PageHelper、Lombok、Husky、Commitlint |
 | **代码规范** | ESLint + Prettier + Stylelint（前端）、Alibaba Java Coding Standards（后端） |
 | **开发环境** | IntelliJ IDEA、Apifox、MySQL Workbench、Redis Desktop Manager |
@@ -349,7 +351,7 @@ PowerCloudCRM/
 ### 前端权限控制
 
 - **路由权限**：动态生成路由，无权限用户无法访问页面
-- **按钮权限**：自定义指令 `v-auth` 控制按钮显隐
+- **按钮权限**：自定义指令 `v-hasPermission` 控制按钮显隐
 - **接口权限**：Spring Security `@PreAuthorize` 控制接口访问
 
 ---
@@ -402,8 +404,9 @@ PowerCloudCRM/
 
 | 工具 | 版本要求 | 说明 |
 |------|----------|------|
-| Node.js | 20.10.0+ | 前端运行环境 |
-| JDK | 17+ | 后端运行环境 |
+| Node.js | 20.10.0+（项目锁定 20.12.1） | 前端运行环境，推荐用 mise 管理 |
+| JDK | 17+（项目锁定 17） | 后端运行环境，推荐用 mise 管理 |
+| mise | 2024 年中以后的版本 | Node / JDK 版本管理（详见[环境管理](#环境管理mise)） |
 | MySQL | 8.0+ | 数据库 |
 | Redis | 6.0+ | 缓存 |
 | IDE | IntelliJ IDEA | 后端开发（推荐） |
@@ -442,6 +445,8 @@ cd crm-server
 ./mvnw spring-boot:run
 ```
 
+> 已配置 mise 时，`./mvnw` 会自动使用锁定的 JDK 17；未激活 shell 时改用 `mise exec -- ./mvnw clean install`。
+
 服务默认运行在 `http://localhost:8080`，API 文档（Swagger）访问 `http://localhost:8080/swagger-ui.html`
 
 ### 前端启动
@@ -464,6 +469,61 @@ npm run dev
 1. 访问前端 `http://localhost:9527`，应看到登录页
 2. 输入测试账号（见 `sql/powercloud.sql` 中的初始化数据）
 3. 登录后进入系统主页
+
+---
+
+## 环境管理（mise）
+
+本项目使用 [mise](https://mise.jdx.dev)（asdf 理念的继任者）统一管理 **Node.js 与 JDK** 多版本：进入项目目录自动切换到锁定版本，离开自动恢复全局默认，无需手动修改系统 `JAVA_HOME` / `Path`，也适合本机同时存在 JDK 8 / 17 / 21 / 24 的场景。
+
+### 一次性安装（已安装可跳过）
+
+```powershell
+# Windows（winget 或 scoop 二选一）
+winget install jdx.mise
+# scoop install mise
+
+# 激活到 PowerShell（写入 $PROFILE，重开终端生效）
+'mise activate pwsh | Out-String | Invoke-Expression' | Add-Content $PROFILE
+```
+
+### 本项目版本锁定
+
+根目录 `mise.toml`：
+
+```toml
+[tools]
+node = "20.12.1"
+java = "local-jdk17"
+```
+
+| 工具 | 版本 | 说明 |
+|------|------|------|
+| Node.js | 20.12.1 | 前端运行环境 |
+| JDK | 17 | 通过 `mise link` 注册本机已安装的 JDK，不重复下载 |
+
+### 常用命令
+
+```bash
+mise install                # 安装当前项目锁定的版本（首次拉代码后执行一次）
+mise current                # 查看当前目录生效的版本
+mise ls                     # 查看已安装的版本
+mise use -g node@20.12.1    # 设置个人全局默认版本（可）
+
+# 复用本机已下载的 JDK（如 D:\Utils\Java\jdk-17），注册后按名字引用
+mise link java@local-jdk17 "D:/Utils/Java/jdk-17"
+```
+
+> IDE（IDEA）中的项目 SDK 仍按原有方式配置，mise 负责终端与构建命令（`./mvnw`、`npm`）所使用的版本。
+
+### 未做 shell 激活时
+
+如果 `mise activate` 没有写入终端配置（未激活），自动切换不生效，命令需加前缀：
+
+```bash
+mise exec -- node -v            # 单条命令使用锁定版本
+mise exec -- ./mvnw compile     # 后端构建使用锁定的 JDK 17
+```
 
 ---
 
@@ -497,7 +557,18 @@ npm run dev
 | 命令 | 说明 |
 |------|------|
 | `cd crm-front && npm run lint` | 前端代码格式检查与自动修复 |
+| `cd crm-front && npx eslint <文件>` | 仅对指定文件跑 ESLint（快速检查，推荐） |
 | `cd crm-server`（IDEA） | Code → Reformat Code（后端格式化） |
+
+### 版本管理（mise）
+
+| 命令 | 说明 |
+|------|------|
+| `mise install` | 安装项目 `mise.toml` 锁定的 Node / JDK |
+| `mise current` | 查看当前生效版本 |
+| `mise ls` | 列出已安装版本 |
+| `mise use -g java@temurin-17` | 设置全局默认版本 |
+| `mise exec -- ./mvnw compile` | 未激活 shell 时，用锁定版本执行命令 |
 
 ---
 

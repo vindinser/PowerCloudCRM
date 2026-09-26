@@ -12,19 +12,38 @@
 
 | 工具 | 版本要求 | 说明 |
 |------|----------|------|
-| Node.js | 20.10.0+ | 前端运行环境 |
+| Node.js | 20.12.1（项目锁定） | 前端运行环境，由 mise 管理 |
 | npm | 9.0.0+ | 包管理工具 |
+| mise | 2024 年中以后的版本 | Node 版本管理（见 1.2） |
 | 编辑器 | VS Code / WebStorm | 推荐编辑器 |
 | 浏览器 | Chrome 90+ | 前端调试（推荐） |
 
-### 1.2 项目克隆
+### 1.2 环境管理（mise）
+
+前端运行时由 [mise](https://mise.jdx.dev) 管理，版本清单在根目录 `mise.toml`（`node = "20.12.1"`）。
+
+```powershell
+# 一次性安装（已安装可跳过）
+winget install jdx.mise
+'mise activate pwsh | Out-String | Invoke-Expression' | Add-Content $PROFILE
+```
+
+```bash
+mise install          # 安装锁定的 Node 20.12.1
+mise current          # 查看生效版本
+mise exec -- node -v  # 未激活 shell 时验证版本
+```
+
+> 未激活 shell 时命令加 `mise exec --` 前缀，确保使用锁定版本。
+
+### 1.3 项目克隆
 
 ```bash
 git clone <repo-url>
 cd PowerCloudCRM/crm-front
 ```
 
-### 1.3 安装依赖
+### 1.4 安装依赖
 
 ```bash
 npm install
@@ -108,6 +127,12 @@ npm run lint
 1. `npm run lint:eslint` — ESLint 检查与自动修复
 2. `npm run lint:prettier` — Prettier 格式化
 3. `npm run lint:stylelint` — Stylelint 检查与自动修复
+
+日常快速检查（推荐，只跑 ESLint）：
+
+```bash
+npx eslint <文件或目录>
+```
 
 ### 4.2 核心规范（ESLint）
 

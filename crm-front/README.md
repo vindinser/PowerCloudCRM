@@ -105,7 +105,7 @@ crm-front/
 │   │   ├── http-client.js          # HTTP 客户端实例
 │   │   └── copyright.js            # 版权信息
 │   ├── directives/                 # 自定义指令
-│   │   └── permission.js           # 权限指令（v-auth）
+│   │   └── permission.js           # 权限指令（v-hasPermission）
 │   ├── plugins/                    # 插件配置
 │   │   └── element-plus/           # Element Plus 配置
 │   ├── router/                     # 路由配置
@@ -158,8 +158,9 @@ crm-front/
 
 | 工具 | 版本要求 | 说明 |
 |------|----------|------|
-| Node.js | 20.10.0+ | 前端运行环境 |
+| Node.js | 20.12.1（项目锁定） | 前端运行环境，推荐用 mise 管理 |
 | npm | 9.0.0+ | 包管理工具 |
+| mise | 2024 年中以后的版本 | Node 版本管理（见下方快速开始） |
 | 浏览器 | Chrome 90+ / Edge 90+ | 前端调试（推荐） |
 | IDE | VS Code / WebStorm | 前端开发（推荐） |
 
@@ -167,14 +168,30 @@ crm-front/
 
 ## 快速开始
 
-### 1. 克隆项目
+### 1. 环境准备（mise）
+
+前端 Node 版本由 [mise](https://mise.jdx.dev) 管理，版本清单在**项目根目录 `mise.toml`**（`node = "20.12.1"`），进入目录自动切换。
+
+```powershell
+# 一次性安装（已安装可跳过）
+winget install jdx.mise
+'mise activate pwsh | Out-String | Invoke-Expression' | Add-Content $PROFILE
+
+# 重开终端后，在项目根目录执行
+mise install        # 安装锁定的 Node 20.12.1
+mise current        # 验证：应显示 node 20.12.1
+```
+
+> 未做 shell 激活时，命令加 `mise exec --` 前缀，如 `mise exec -- node -v`。
+
+### 2. 克隆项目
 
 ```bash
 git clone <repo-url>
 cd PowerCloudCRM/crm-front
 ```
 
-### 2. 安装依赖
+### 3. 安装依赖
 
 ```bash
 npm install
@@ -182,7 +199,7 @@ npm install
 
 > **注意**：本项目使用 npm 作为包管理工具，请勿使用 yarn 或 pnpm，以避免 lockfile 不一致。
 
-### 3. 启动开发服务器
+### 4. 启动开发服务器
 
 ```bash
 npm run dev
@@ -190,7 +207,7 @@ npm run dev
 
 开发服务器默认运行在 `http://localhost:9527`
 
-### 4. 访问系统
+### 5. 访问系统
 
 在浏览器中打开 `http://localhost:9527`，使用测试账号登录（账号信息见项目根目录 `sql/powercloud.sql` 初始化数据）。
 
@@ -210,6 +227,8 @@ npm run dev
 | `npm run build:prod` | 生产环境构建 |
 | `npm run build:stage` | 预发布环境构建 |
 | `npm run preview` | 预览生产构建结果 |
+
+> 版本管理（mise）：`mise install` 安装锁定版本、`mise current` 查看生效版本；日常代码检查推荐 `npx eslint <文件>`（只跑 ESLint）。
 
 ---
 

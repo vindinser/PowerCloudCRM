@@ -6,6 +6,32 @@
 
 ---
 
+## 环境与工具链（mise）
+
+> 所有代码（含 AI 生成的代码）必须在 **JDK 17** 下开发、编译与验证。
+
+后端 JDK 由 [mise](https://mise.jdx.dev) 统一管理，版本清单在根目录 `mise.toml`（`java = "local-jdk17"`）。规则：
+
+1. **JDK 锁定 17**。使用 `mise link` 引用本机已安装的 JDK，不重复下载：
+
+   ```bash
+   mise link java@local-jdk17 "D:/Utils/Java/jdk-17"
+   ```
+
+2. **构建 / 运行命令**（激活 shell 后可直接执行；未激活加 `mise exec --` 前缀）：
+
+   ```bash
+   mise exec -- ./mvnw -v              # 确认 Java version: 17.x
+   mise exec -- ./mvnw compile         # 编译验证
+   mise exec -- ./mvnw clean install   # 完整构建
+   mise exec -- ./mvnw spring-boot:run # 启动服务
+   ```
+
+3. 本机存在多个 JDK（8/17/21/24）时，在各项目 `mise.toml` 中声明版本，**禁止再手动修改系统 `JAVA_HOME`**。
+4. IDEA 中另行为项目配置 SDK 17（File → Project Structure → Project SDK），与 mise 互不影响。
+
+---
+
 ## 一、环境要求
 
 - JDK 17+

@@ -14,22 +14,43 @@
 
 | 工具 | 版本要求 | 说明 |
 |------|----------|------|
-| Node.js | 20.10.0+ | 前端运行环境 |
-| JDK | 17+ | 后端运行环境 |
+| Node.js | 20.10.0+（项目锁定 20.12.1） | 前端运行环境，推荐用 mise 管理 |
+| JDK | 17+（项目锁定 17） | 后端运行环境，推荐用 mise 管理 |
+| mise | 2024 年中以后的版本 | Node / JDK 多版本管理（见 1.2） |
 | MySQL | 8.0+ | 数据库 |
 | Redis | 6.0+ | 缓存 |
 | IDE | IntelliJ IDEA | 后端开发（推荐） |
 | 编辑器 | VS Code / WebStorm | 前端开发（推荐） |
 | Git | 2.30+ | 版本控制 |
 
-### 1.2 项目克隆
+### 1.2 环境管理（mise）
+
+本项目使用 [mise](https://mise.jdx.dev) 统一管理 Node.js / JDK：进入项目目录自动切换锁定版本，无需手动改系统 `JAVA_HOME`。
+
+```powershell
+# 一次性安装（已安装可跳过）
+winget install jdx.mise
+'mise activate pwsh | Out-String | Invoke-Expression' | Add-Content $PROFILE
+```
+
+根目录 `mise.toml` 已锁定 `node = "20.12.1"`、`java = "local-jdk17"`（JDK 17 通过 `mise link` 引用本机安装，不重复下载）。常用命令：
+
+```bash
+mise install            # 首次拉代码后安装锁定版本
+mise current            # 查看当前生效版本
+mise exec -- ./mvnw compile   # 未激活 shell 时用锁定版本执行命令
+```
+
+> 详见 [README.md 环境管理（mise）](./README.md#环境管理mise)。
+
+### 1.3 项目克隆
 
 ```bash
 git clone <repo-url>
 cd PowerCloudCRM
 ```
 
-### 1.3 数据库初始化
+### 1.4 数据库初始化
 
 ```bash
 mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS powercloud DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
@@ -138,9 +159,9 @@ git push origin feature/user-export
 ### 4.2 提交检查
 
 ```bash
-# 提交前检查
+# 提交前检查（前端快速检查推荐 npx eslint <文件>）
 cd crm-front && npm run lint
-cd crm-server && ./mvnw clean install
+cd crm-server && mise exec -- ./mvnw clean install
 
 # 提交
 git add .
@@ -169,7 +190,7 @@ git commit -m "docs: 更新 README 部署指南"
 
 1. 从 `develop` 创建功能分支
 2. 完成开发并提交（确保提交信息符合规范）
-3. 运行代码检查（`npm run lint` 或 `./mvnw clean install`）
+3. 运行代码检查（`npm run lint` 或 `mise exec -- ./mvnw compile`）
 4. 推送到远程：`git push origin feature/xxx`
 5. 在 GitLab/GitHub 创建 Pull Request
 

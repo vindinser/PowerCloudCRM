@@ -40,7 +40,8 @@
 | Excel 处理 | EasyExcel | - | Excel 导入导出 |
 | 数据校验 | Jakarta Validation | - | 请求参数校验 |
 | 构建工具 | Maven Wrapper | - | 项目构建与依赖管理 |
-| 运行环境 | JDK | 17+ | Java 开发工具包 |
+| 版本管理 | mise | - | JDK 多版本管理（进入目录自动切换） |
+| 运行环境 | JDK | 17 | Java 开发工具包（项目锁定，mise 管理） |
 
 ---
 
@@ -179,8 +180,9 @@ crm-server/
 
 | 工具 | 版本要求 | 说明 |
 |------|----------|------|
-| JDK | 17+ | Java 运行环境 |
+| JDK | 17（项目锁定） | Java 运行环境，推荐用 mise 管理 |
 | Maven | 3.8+ | 构建工具（项目使用 Maven Wrapper） |
+| mise | 2024 年中以后的版本 | JDK 版本管理（见下方快速开始） |
 | MySQL | 8.0+ | 数据库 |
 | Redis | 6.0+ | 缓存 |
 | IDE | IntelliJ IDEA | 后端开发（推荐） |
@@ -197,14 +199,33 @@ git clone <repo-url>
 cd PowerCloudCRM/crm-server
 ```
 
-### 2. 初始化数据库
+### 2. 环境准备（mise）
+
+后端 JDK 由 [mise](https://mise.jdx.dev) 管理，版本清单在**项目根目录 `mise.toml`**（`java = "local-jdk17"`）。
+
+```powershell
+# 一次性安装（已安装可跳过）
+winget install jdx.mise
+'mise activate pwsh | Out-String | Invoke-Expression' | Add-Content $PROFILE
+```
+
+```bash
+# 首次使用：把本机已安装的 JDK 17 注册给 mise（不重复下载）
+mise link java@local-jdk17 "D:/Utils/Java/jdk-17"
+
+# 在项目根目录执行
+mise install            # 安装锁定版本
+mise exec -- ./mvnw -v  # 验证：Java version 应为 17.x
+```
+
+### 3. 初始化数据库
 
 ```bash
 mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS powercloud DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 mysql -u root -p powercloud < ../sql/powercloud.sql
 ```
 
-### 3. 修改配置
+### 4. 修改配置
 
 修改 `src/main/resources/application.yml` 中的数据库和 Redis 连接信息：
 
@@ -220,7 +241,7 @@ spring:
       port: 6379                   # Redis 端口
 ```
 
-### 4. 启动服务
+### 5. 启动服务
 
 ```bash
 ./mvnw spring-boot:run
@@ -228,7 +249,9 @@ spring:
 
 服务默认运行在 `http://localhost:8080`
 
-### 5. 验证启动
+> 已配置 mise 时 `./mvnw` 自动使用锁定的 JDK 17；未激活 shell 时使用 `mise exec -- ./mvnw spring-boot:run`。
+
+### 6. 验证启动
 
 ```bash
 # 访问 API 文档（Swagger）
@@ -290,7 +313,7 @@ public PageInfo<TUser> getUserByPage(BasePageQuery query, String keyword) {
 ### 权限控制
 
 - 接口级权限：`@PreAuthorize("hasAuthority('user:list')")`
-- 按钮级权限：前端自定义指令 `v-auth` 控制
+- 按钮级权限：前端自定义指令 `v-hasPermission` 控制
 - 数据权限：`@DataScope` 注解实现行级数据过滤
 
 ### 异常处理

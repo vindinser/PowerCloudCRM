@@ -6,6 +6,27 @@
 
 ---
 
+## 环境与工具链（mise）
+
+本项目前端运行时由 [mise](https://mise.jdx.dev) 统一管理，版本清单在根目录 `mise.toml`：
+
+| 工具 | 锁定版本 | 管理方式 |
+|------|----------|----------|
+| Node.js | 20.12.1 | `mise install` 安装，进入目录自动切换 |
+| npm | 随 Node 附带 | 禁止切换 yarn / pnpm |
+
+常用命令：
+
+```bash
+mise install                          # 首次拉代码后安装锁定版本
+mise current                          # 查看当前生效版本（应显示 node 20.12.1）
+mise exec -- node -v                  # 未激活 shell 时验证版本
+```
+
+> 未做 shell 激活（`mise activate pwsh` 未写入 `$PROFILE`）时，所有终端命令建议加 `mise exec --` 前缀，确保使用锁定版本。
+
+---
+
 ## 一、快速校验
 
 ```bash
@@ -16,6 +37,12 @@ cd crm-front && npm run lint
 1. `npm run lint:eslint` — ESLint 检查与自动修复
 2. `npm run lint:prettier` — Prettier 格式化
 3. `npm run lint:stylelint` — Stylelint 检查与自动修复
+
+**日常快速检查（推荐）**：只跑 ESLint，不触发 prettier/stylelint 的全量格式化：
+
+```bash
+npx eslint <文件或目录>          # 例：npx eslint src/plugins/tinymce
+```
 
 ---
 
