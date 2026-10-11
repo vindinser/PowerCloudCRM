@@ -33,7 +33,7 @@ public interface TUserMapper {
 
     TUser selectDetailById(Integer id);
 
-    int deleteByIds(Integer[] ids);
+    int deleteByIds(@Param("ids") Integer[] ids);
 
     List<DropDownOptionsQuery> selectByOwner();
 }

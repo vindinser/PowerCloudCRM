@@ -39,7 +39,6 @@
     // { label: 'ID', value: 'id' },
     { label: '账号', value: 'loginAct' },
     { label: '姓名', value: 'name' },
-    { label: '密码', value: 'loginPwd' },
     { label: '手机号', value: 'phone' },
     { label: '邮箱', value: 'email' },
     { label: '账号未过期', value: 'accountNoExpired', isCode: true },

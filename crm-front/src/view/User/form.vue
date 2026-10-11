@@ -9,6 +9,16 @@
         </el-radio-group>
         <el-input v-else v-model="ruleForm[item.value]" :placeholder="`请输入${ item.label }`" clearable :disabled="item.disabled" />
       </el-form-item>
+      <el-form-item label="分配角色" prop="roleIds">
+        <el-select v-model="ruleForm.roleIds" multiple placeholder="请选择角色" style="width: 100%;">
+          <el-option
+            v-for="item in roleOptions"
+            :key="item.id"
+            :value="item.id"
+            :label="item.roleName"
+          />
+        </el-select>
+      </el-form-item>
     </el-form>
     <template #foot>
       <el-button type="primary" @click="onSubmit">确 认</el-button>
@@ -20,6 +30,7 @@
 <script setup name="UserForm">
   import ZSDetail from '@/components/ZSDetail';
   import { addUser, updateUser } from '@/api/user.js';
+  import { getRoles } from '@/api/role.js';
   import useUserStore from '@/store/modules/user';
 
   const { proxy } = getCurrentInstance();
@@ -100,11 +111,24 @@
         ];
       }
     }
+    // 初始化角色ID列表
+    ruleForm.value.roleIds = [];
   })();
 
   const isEdit = ref(false);
 
   const userStore = useUserStore();
+
+  // 角色选项
+  const roleOptions = ref([]);
+
+  const loadRoles = async () => {
+    const res = await getRoles();
+
+    if (res.code === 200) {
+      roleOptions.value = res.ListData || res.data || [];
+    }
+  };
 
   const ruleFormRef = ref(null);
   // 确认新增
@@ -141,14 +165,17 @@
   // 获取用户回显信息
   const getUserEcho = () => {
     for(let k in ruleForm.value) {
-      if(k === 'loginPwd') {
+      if(k === 'loginPwd' || k === 'roleIds') {
         continue;
       }
       ruleForm.value[k] = row[k] || '';
     }
+    // 回显角色ID列表
+    ruleForm.value.roleIds = row.roleIds || [];
   };
 
   onMounted(() => {
+    loadRoles();
     const isAdd = proxy.$utils.isEmptyObject(row);
 
     if(!isAdd) {

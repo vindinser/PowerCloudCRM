@@ -2,6 +2,8 @@ package com.zs.crmserver.mapper;
 
 import com.zs.crmserver.model.TRolePermission;
 
+import java.util.List;
+
 public interface TRolePermissionMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -14,4 +16,12 @@ public interface TRolePermissionMapper {
     int updateByPrimaryKeySelective(TRolePermission record);
 
     int updateByPrimaryKey(TRolePermission record);
+
+    int deleteByRoleId(Integer roleId);
+
+    int deleteByPermissionId(Integer permissionId);
+
+    int batchInsert(List<TRolePermission> list);
+
+    List<Integer> selectPermissionIdsByRoleId(Integer roleId);
 }

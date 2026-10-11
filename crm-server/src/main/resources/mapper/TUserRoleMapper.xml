@@ -60,4 +60,47 @@
       role_id = #{roleId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 根据用户ID删除用户角色关系 -->
+  <delete id="deleteByUserId" parameterType="java.lang.Integer">
+    delete from t_user_role where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+
+  <!-- 根据角色ID删除用户角色关系 -->
+  <delete id="deleteByRoleId" parameterType="java.lang.Integer">
+    delete from t_user_role where role_id = #{roleId,jdbcType=INTEGER}
+  </delete>
+
+  <!-- 根据用户ID批量删除用户角色关系 -->
+  <delete id="deleteByUserIds" parameterType="java.util.List">
+    delete from t_user_role
+    where user_id in
+    <foreach collection="userIds" item="userId" open="(" close=")" separator=",">
+      #{userId,jdbcType=INTEGER}
+    </foreach>
+  </delete>
+
+  <!-- 批量插入用户角色关系 -->
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert into t_user_role (user_id, role_id) values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.userId,jdbcType=INTEGER}, #{item.roleId,jdbcType=INTEGER})
+    </foreach>
+  </insert>
+
+  <!-- 根据用户ID查询角色ID列表 -->
+  <select id="selectRoleIdsByUserId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select role_id from t_user_role where user_id = #{userId,jdbcType=INTEGER}
+  </select>
+
+  <!-- 根据用户ID批量查询角色关系（用于列表回显） -->
+  <select id="selectRoleIdsByUserIds" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_user_role
+    where user_id in
+    <foreach collection="userIds" item="userId" open="(" close=")" separator=",">
+      #{userId,jdbcType=INTEGER}
+    </foreach>
+  </select>
 </mapper>

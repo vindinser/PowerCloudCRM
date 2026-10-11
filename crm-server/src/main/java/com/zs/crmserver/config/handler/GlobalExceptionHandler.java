@@ -6,6 +6,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -14,6 +16,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 /**
  * 统一异常处理类，controller发生了异常，统一用该类进行处理
@@ -32,6 +35,20 @@ public class GlobalExceptionHandler {
     public R handException(Exception e) {
         e.printStackTrace(); //在控制台打印异常信息
         return R.FAIL(e.getMessage());
+    }
+
+    /**
+     * 参数校验异常处理（@Valid 校验失败），拼接所有字段的错误消息
+     *
+     * @param e 参数校验异常
+     * @return 错误响应
+     */
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public R handleValidationException(MethodArgumentNotValidException e) {
+        String message = e.getBindingResult().getFieldErrors().stream()
+            .map(FieldError::getDefaultMessage)
+            .collect(Collectors.joining(", "));
+        return R.FAIL(message);
     }
 
     /**

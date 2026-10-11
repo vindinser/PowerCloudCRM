@@ -2,6 +2,8 @@ package com.zs.crmserver.query;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class UserQuery extends BaseQuery {
     /**
@@ -53,4 +55,9 @@ public class UserQuery extends BaseQuery {
      * 账号是否启用，0禁用 1启用
      */
     private Integer accountEnabled;
+
+    /**
+     * 角色ID列表
+     */
+    private List<Integer> roleIds;
 }

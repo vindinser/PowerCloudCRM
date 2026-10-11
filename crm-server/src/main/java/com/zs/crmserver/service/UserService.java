@@ -14,6 +14,14 @@ public interface UserService extends UserDetailsService {
 
     TUser getUserById(Integer id);
 
+    /**
+     * 获取用户详情（包含角色ID列表）
+     *
+     * @param id 用户ID
+     * @return 用户信息（含 roleIds）
+     */
+    TUser getUserDetailWithRoles(Integer id);
+
     int saveUser(UserQuery userQuery);
 
     int updateUser(UserQuery userQuery, Integer loginUserId, Boolean isEditPwd);

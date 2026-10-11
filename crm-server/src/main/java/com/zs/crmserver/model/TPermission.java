@@ -3,6 +3,7 @@ package com.zs.crmserver.model;
 import java.io.Serializable;
 import java.util.List;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 /**
@@ -20,6 +21,7 @@ public class TPermission implements Serializable {
     /**
      * 菜单/按钮的名称（资源名称）
      */
+    @NotBlank(message = "名称不能为空")
     private String name;
 
     /**
@@ -35,6 +37,7 @@ public class TPermission implements Serializable {
     /**
      * 资源类型（菜单/按钮）
      */
+    @NotBlank(message = "资源类型不能为空")
     private String type;
 
     /**

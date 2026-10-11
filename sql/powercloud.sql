@@ -554,6 +554,18 @@ INSERT INTO `t_permission` VALUES (58, '系统管理-录入', 'system:add', NULL
 INSERT INTO `t_permission` VALUES (59, '系统管理-编辑', 'system:edit', NULL, 'button', 56, NULL, NULL);
 INSERT INTO `t_permission` VALUES (60, '系统管理-查看', 'system:view', NULL, 'button', 56, NULL, NULL);
 INSERT INTO `t_permission` VALUES (61, '系统管理-删除', 'system:delete', NULL, 'button', 56, NULL, NULL);
+INSERT INTO `t_permission` VALUES (62, '角色管理', NULL, '/dashboard/role', 'menu', 55, 2, 'UserFilled');
+INSERT INTO `t_permission` VALUES (63, '角色管理-列表', 'role:list', NULL, 'button', 62, NULL, NULL);
+INSERT INTO `t_permission` VALUES (64, '角色管理-录入', 'role:add', NULL, 'button', 62, NULL, NULL);
+INSERT INTO `t_permission` VALUES (65, '角色管理-编辑', 'role:edit', NULL, 'button', 62, NULL, NULL);
+INSERT INTO `t_permission` VALUES (66, '角色管理-查看', 'role:view', NULL, 'button', 62, NULL, NULL);
+INSERT INTO `t_permission` VALUES (67, '角色管理-删除', 'role:delete', NULL, 'button', 62, NULL, NULL);
+INSERT INTO `t_permission` VALUES (68, '菜单管理', NULL, '/dashboard/permission', 'menu', 55, 3, 'Menu');
+INSERT INTO `t_permission` VALUES (69, '菜单管理-列表', 'permission:list', NULL, 'button', 68, NULL, NULL);
+INSERT INTO `t_permission` VALUES (70, '菜单管理-录入', 'permission:add', NULL, 'button', 68, NULL, NULL);
+INSERT INTO `t_permission` VALUES (71, '菜单管理-编辑', 'permission:edit', NULL, 'button', 68, NULL, NULL);
+INSERT INTO `t_permission` VALUES (72, '菜单管理-查看', 'permission:view', NULL, 'button', 68, NULL, NULL);
+INSERT INTO `t_permission` VALUES (73, '菜单管理-删除', 'permission:delete', NULL, 'button', 68, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for t_product
@@ -599,7 +611,8 @@ CREATE TABLE `t_role`  (
   `id` int NOT NULL AUTO_INCREMENT,
   `role` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `role_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_role`(`role`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -688,6 +701,18 @@ INSERT INTO `t_role_permission` VALUES (56, 1, 58);
 INSERT INTO `t_role_permission` VALUES (57, 1, 59);
 INSERT INTO `t_role_permission` VALUES (58, 1, 60);
 INSERT INTO `t_role_permission` VALUES (59, 1, 61);
+INSERT INTO `t_role_permission` VALUES (88, 1, 62);
+INSERT INTO `t_role_permission` VALUES (77, 1, 63);
+INSERT INTO `t_role_permission` VALUES (78, 1, 64);
+INSERT INTO `t_role_permission` VALUES (79, 1, 65);
+INSERT INTO `t_role_permission` VALUES (80, 1, 66);
+INSERT INTO `t_role_permission` VALUES (81, 1, 67);
+INSERT INTO `t_role_permission` VALUES (82, 1, 68);
+INSERT INTO `t_role_permission` VALUES (83, 1, 69);
+INSERT INTO `t_role_permission` VALUES (84, 1, 70);
+INSERT INTO `t_role_permission` VALUES (85, 1, 71);
+INSERT INTO `t_role_permission` VALUES (86, 1, 72);
+INSERT INTO `t_role_permission` VALUES (87, 1, 73);
 INSERT INTO `t_role_permission` VALUES (60, 2, 10);
 INSERT INTO `t_role_permission` VALUES (61, 2, 12);
 INSERT INTO `t_role_permission` VALUES (62, 2, 13);

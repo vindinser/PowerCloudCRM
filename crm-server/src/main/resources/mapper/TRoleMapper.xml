@@ -71,4 +71,34 @@
       role_name = #{roleName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 查询所有角色 -->
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_role
+  </select>
+
+  <!-- 分页查询角色 -->
+  <select id="selectRoleByPage" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_role
+    <where>
+      <if test="keyword != null and keyword != ''">
+        AND (`role` LIKE CONCAT('%', #{keyword}, '%')
+          OR role_name LIKE CONCAT('%', #{keyword}, '%'))
+      </if>
+    </where>
+    ORDER BY id
+  </select>
+
+  <!-- 批量删除角色 -->
+  <delete id="deleteByIds" parameterType="java.util.List">
+    delete from t_role
+    where id in
+    <foreach collection="ids" item="id" open="(" close=")" separator=",">
+      #{id,jdbcType=INTEGER}
+    </foreach>
+  </delete>
 </mapper>

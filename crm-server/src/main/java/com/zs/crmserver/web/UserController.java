@@ -63,7 +63,11 @@ public class UserController {
     @PreAuthorize(value = "hasAuthority('user:view')")
     @GetMapping("/api/user/{id}")
     public R userDetail(@PathVariable(value = "id") Integer id) {
-        TUser tUser = userService.getUserById(id);
+        TUser tUser = userService.getUserDetailWithRoles(id);
+
+        if (tUser == null) {
+            return R.FAIL("用户不存在");
+        }
         return R.OK(tUser);
     }
 
@@ -117,7 +121,11 @@ public class UserController {
     @Transactional(rollbackFor = Exception.class)
     @DeleteMapping("/api/user/del")
     public R batchDelUser(@RequestParam(value = "ids") Integer[] ids) {
+        if (ids == null || ids.length == 0) {
+            return R.FAIL("请选择要删除的数据");
+        }
         int batchDel = userService.batchDelUserByIds(ids);
+
         return batchDel >= 1 ? R.OK() : R.FAIL();
     }
 

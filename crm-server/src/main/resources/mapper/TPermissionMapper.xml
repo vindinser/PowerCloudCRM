@@ -21,12 +21,16 @@
     <result column="parent_id" jdbcType="INTEGER" property="parentId" />
     <result column="order_no" jdbcType="INTEGER" property="orderNo" />
     <result column="icon" jdbcType="VARCHAR" property="icon" />
-    <!--一对多关联映射，一个父菜单下有多个子菜单-->
+    <!--一对多关联映射，一个父菜单下有多个子菜单/按钮-->
     <collection property="subPermissionList" ofType="com.zs.crmserver.model.TPermission">
       <id column="cid" jdbcType="INTEGER" property="id" />
       <result column="cname" jdbcType="VARCHAR" property="name" />
+      <result column="ccode" jdbcType="VARCHAR" property="code" />
       <result column="curl" jdbcType="VARCHAR" property="url" />
       <result column="cicon" jdbcType="VARCHAR" property="icon" />
+      <result column="ctype" jdbcType="VARCHAR" property="type" />
+      <result column="cparent_id" jdbcType="INTEGER" property="parentId" />
+      <result column="corder_no" jdbcType="INTEGER" property="orderNo" />
     </collection>
   </resultMap>
 
@@ -170,4 +174,41 @@
       icon = #{icon,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 查询菜单树（一级菜单+子菜单+按钮，用于权限分配） -->
+  <select id="selectMenuTree" resultMap="PermissionResultMap">
+    SELECT
+      tp.*,
+      childTp.id cid, childTp.name cname, childTp.code ccode,
+      childTp.url curl, childTp.icon cicon, childTp.type ctype,
+      childTp.parent_id cparent_id, childTp.order_no corder_no
+    FROM
+      t_permission tp
+        LEFT JOIN t_permission childTp ON tp.id = childTp.parent_id
+    WHERE
+      tp.type = 'menu' AND tp.parent_id = 0
+    ORDER BY tp.order_no, childTp.order_no
+  </select>
+
+  <!-- 查询所有权限（菜单+按钮） -->
+  <select id="selectAllPermissions" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_permission
+    order by parent_id, order_no
+  </select>
+
+  <!-- 统计子菜单/按钮数量 -->
+  <select id="countByParentId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+    select count(1) from t_permission where parent_id = #{parentId,jdbcType=INTEGER}
+  </select>
+
+  <!-- 批量删除权限 -->
+  <delete id="deleteByIds" parameterType="java.util.List">
+    delete from t_permission
+    where id in
+    <foreach collection="ids" item="id" open="(" close=")" separator=",">
+      #{id,jdbcType=INTEGER}
+    </foreach>
+  </delete>
 </mapper>

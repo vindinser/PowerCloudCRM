@@ -42,6 +42,18 @@ let router = createRouter({
           // 数据分析
           path: 'statistic',
           component : () => import('@/view/Statistic')
+        }, {
+          // 系统管理
+          path: 'system',
+          component : () => import('@/view/System')
+        }, {
+          // 角色管理
+          path: 'role',
+          component : () => import('@/view/Role')
+        }, {
+          // 菜单管理
+          path: 'permission',
+          component : () => import('@/view/Permission')
         }
       ]
     },

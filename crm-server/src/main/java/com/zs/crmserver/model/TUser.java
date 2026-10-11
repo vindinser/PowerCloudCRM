@@ -33,6 +33,7 @@ public class TUser implements UserDetails, Serializable {
     /**
      * 登录密码
      */
+    @JsonIgnore
     private String loginPwd;
 
     /**
@@ -113,6 +114,11 @@ public class TUser implements UserDetails, Serializable {
      * 菜单
      */
     private List<TPermission> menuPermissionList;
+
+    /**
+     * 角色ID列表（用于用户管理页面回显）
+     */
+    private List<Integer> roleIds;
 
     private static final long serialVersionUID = 1L;
 

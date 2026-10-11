@@ -1,6 +1,7 @@
 package com.zs.crmserver.mapper;
 
 import com.zs.crmserver.model.TRole;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,4 +19,10 @@ public interface TRoleMapper {
     int updateByPrimaryKey(TRole record);
 
     List<TRole> selectByUserId(Integer userId);
+
+    List<TRole> selectAll();
+
+    List<TRole> selectRoleByPage(@Param("keyword") String keyword);
+
+    int deleteByIds(@Param("ids") Integer[] ids);
 }
